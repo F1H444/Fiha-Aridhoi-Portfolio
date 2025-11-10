@@ -16,13 +16,13 @@ Halaman Hero
 
 Proyek Unggulan
 
-Keahlian
-
 <img src="public/project/smkn2.png" alt="Hero Section" width="300">
 
 <img src="public/project/kalkulator.png" alt="Proyek Kalkulator" width="300">
 
 <img src="public/project/sikalori.png" alt="Proyek Sikalori" width="300">
+
+Keahlian
 
 (Anda bisa mengganti gambar di atas dengan screenshot yang lebih relevan dari live demo)
 
