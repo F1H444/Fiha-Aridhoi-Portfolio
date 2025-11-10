@@ -16,7 +16,7 @@ const About = () => {
 
   const viewportConfig = { once: true, amount: 0.3 };
   const textEase = "easeOut";
-  const backEase = [0.34, 1.56, 0.64, 1];
+  const backEase = "backOut";
 
   return (
     <main
