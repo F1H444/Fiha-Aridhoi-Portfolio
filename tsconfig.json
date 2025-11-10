@@ -22,7 +22,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".", // <-- TAMBAHKAN INI
+    // "baseUrl": "", // <-- TAMBAHKAN INI
     "paths": {
       "@/*": [
         "./*"

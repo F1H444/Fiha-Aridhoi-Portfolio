@@ -11,7 +11,7 @@ const SmoothScroll = () => {
     const lenis = new Lenis({
       duration: 1.2, // Durasi animasi (lebih tinggi = lebih lambat)
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing function
-      smoothTouch: true, // Aktifkan smooth scroll untuk perangkat sentuh
+      touchMultiplier: 2, // Multiplier untuk perangkat sentuh
     });
 
     // Fungsi untuk menjalankan loop animasi

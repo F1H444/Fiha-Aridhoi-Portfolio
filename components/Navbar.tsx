@@ -1,29 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react"; // UPDATE: Hapus useRef (tidak terpakai)
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import {
-  Menu,
-  X,
-  Home,
-  User,
-  Code,
-  LayoutGrid,
-  // ArrowRight, // UPDATE: Hapus (tidak terpakai)
-  Mail,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { Menu, X, Home, User, Code, LayoutGrid, Mail } from "lucide-react";
+import { motion, AnimatePresence, Variants } from "framer-motion"; // Import Variants
 
 export default function ModernNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("beranda");
-  // const pathname = usePathname(); // UPDATE: Hapus (tidak terpakai)
   const router = useRouter();
 
-  // Efek scroll untuk style navbar
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
@@ -32,7 +21,6 @@ export default function ModernNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // UPDATE: Tautan navigasi sekarang menggunakan hash (#) untuk scroll
   const navLinks = [
     { id: "beranda", name: "Beranda", href: "/#beranda", icon: Home },
     { id: "tentang", name: "Tentang", href: "/#tentang", icon: User },
@@ -41,12 +29,10 @@ export default function ModernNavbar() {
     { id: "kontak", name: "Kontak", href: "/#kontak", icon: Mail },
   ];
 
-  // Prefetch root page
   useEffect(() => {
     router.prefetch("/");
   }, [router]);
 
-  // Efek Intersection Observer untuk active section
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -54,7 +40,6 @@ export default function ModernNavbar() {
       threshold: 0,
     };
 
-    // UPDATE: Memberikan tipe yang benar, bukan 'any[]'
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -70,20 +55,20 @@ export default function ModernNavbar() {
 
     const sections = navLinks
       .map((link) => document.getElementById(link.id))
-      .filter(Boolean); // Filter(Boolean) akan menghapus null jika ada
+      .filter((section): section is HTMLElement => section !== null);
 
-    // Aman untuk observe karena null sudah difilter
-    sections.forEach((section) => observer.observe(section!));
+    sections.forEach((section) => observer.observe(section));
 
-    return () => sections.forEach((section) => observer.unobserve(section!));
-  }, [navLinks]); // Tambahkan navLinks sebagai dependensi
+    return () => sections.forEach((section) => observer.unobserve(section));
+  }, [navLinks]);
 
-  // Definisikan varian animasi untuk Framer Motion
-  const mobileMenuVariant = {
+  // Definisikan varian dengan tipe Variants
+  const mobileMenuVariant: Variants = {
     hidden: {
       opacity: 0,
       y: -20,
-      transition: { duration: 0.2, ease: "easeOut" },
+      // HAPUS TRANSISI DARI 'hidden' (INITIAL STATE)
+      // transition: { duration: 0.2, ease: "easeOut" }, // <-- INI PENYEBAB ERROR
     },
     visible: {
       opacity: 1,
@@ -101,7 +86,7 @@ export default function ModernNavbar() {
     },
   };
 
-  const mobileLinkVariant = {
+  const mobileLinkVariant: Variants = {
     hidden: { opacity: 0, x: -15 },
     visible: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -15 },
@@ -206,7 +191,6 @@ export default function ModernNavbar() {
               <div className="px-6 py-4 space-y-2">
                 {navLinks.map((link) => {
                   const isActive = activeSection === link.id;
-                  // FIX: Komponen harus diawali huruf besar untuk dirender
                   const Icon = link.icon;
                   return (
                     <motion.div key={link.name} variants={mobileLinkVariant}>
@@ -219,7 +203,6 @@ export default function ModernNavbar() {
                             : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-gray-800/60"
                         }`}
                       >
-                        {/* FIX: Gunakan variabel 'Icon' yang sudah dikapitalisasi */}
                         <Icon
                           className={`w-5 h-5 ${
                             isActive ? "text-orange-500" : ""
