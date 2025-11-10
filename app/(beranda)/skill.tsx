@@ -55,7 +55,7 @@ const AnimatedH2 = ({
   title: string;
   className?: string;
 }) => {
-  const backEase = [0.34, 1.56, 0.64, 1];
+  const backEase = "backOut";
   const viewportConfig = { once: true, amount: 0.5 };
 
   return (
@@ -84,7 +84,7 @@ const AnimatedH2 = ({
 
 const Skills = () => {
   const title = "Keahlian Saya";
-  const backEase = [0.34, 1.56, 0.64, 1];
+  const backEase = "backOut";
   const viewportConfig = { once: true, amount: 0.5 };
 
   return (
