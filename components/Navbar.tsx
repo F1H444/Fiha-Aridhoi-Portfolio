@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react"; // Tambahkan useRef
+import { useState, useEffect } from "react"; // UPDATE: Hapus useRef (tidak terpakai)
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -11,16 +11,16 @@ import {
   User,
   Code,
   LayoutGrid,
-  ArrowRight,
-  Mail, // Tambahkan ikon Kontak
+  // ArrowRight, // UPDATE: Hapus (tidak terpakai)
+  Mail,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ModernNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("beranda"); // State untuk active section
-  const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState("beranda");
+  // const pathname = usePathname(); // UPDATE: Hapus (tidak terpakai)
   const router = useRouter();
 
   // Efek scroll untuk style navbar
@@ -38,7 +38,7 @@ export default function ModernNavbar() {
     { id: "tentang", name: "Tentang", href: "/#tentang", icon: User },
     { id: "skills", name: "Skill", href: "/#skills", icon: Code },
     { id: "project", name: "Project", href: "/#project", icon: LayoutGrid },
-    { id: "kontak", name: "Kontak", href: "/#kontak", icon: Mail }, // Tambahkan Kontak ke nav utama
+    { id: "kontak", name: "Kontak", href: "/#kontak", icon: Mail },
   ];
 
   // Prefetch root page
@@ -49,12 +49,13 @@ export default function ModernNavbar() {
   // Efek Intersection Observer untuk active section
   useEffect(() => {
     const observerOptions = {
-      root: null, // relative to document viewport
-      rootMargin: "-40% 0px -60% 0px", // Trigger di tengah layar
-      threshold: 0, // Trigger saat elemen baru masuk/keluar margin
+      root: null,
+      rootMargin: "-40% 0px -60% 0px",
+      threshold: 0,
     };
 
-    const observerCallback = (entries) => {
+    // UPDATE: Memberikan tipe yang benar, bukan 'any[]'
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id);
@@ -67,14 +68,15 @@ export default function ModernNavbar() {
       observerOptions
     );
 
-    // Amati semua section dengan ID yang sesuai
     const sections = navLinks
       .map((link) => document.getElementById(link.id))
-      .filter(Boolean);
-    sections.forEach((section) => observer.observe(section));
+      .filter(Boolean); // Filter(Boolean) akan menghapus null jika ada
 
-    return () => sections.forEach((section) => observer.unobserve(section));
-  }, []); // Hanya run sekali
+    // Aman untuk observe karena null sudah difilter
+    sections.forEach((section) => observer.observe(section!));
+
+    return () => sections.forEach((section) => observer.unobserve(section!));
+  }, [navLinks]); // Tambahkan navLinks sebagai dependensi
 
   // Definisikan varian animasi untuk Framer Motion
   const mobileMenuVariant = {
@@ -83,7 +85,7 @@ export default function ModernNavbar() {
       y: -20,
       transition: { duration: 0.2, ease: "easeOut" },
     },
-    visible: {  
+    visible: {
       opacity: 1,
       y: 0,
       transition: {
@@ -126,16 +128,16 @@ export default function ModernNavbar() {
           >
             {/* Logo */}
             <Link
-              href="/#beranda" // Arahkan ke section beranda
+              href="/#beranda"
               className="flex items-center space-x-3 group"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform duration-300 ease-in-out">
                 <Image
-                  src="/images/logo.png" // Pastikan path logo benar
+                  src="/images/logo.png"
                   alt="Logo"
                   fill
-                  sizes="(max-width: 768px) 36px, 40px" // Tambahkan sizes
+                  sizes="(max-width: 768px) 36px, 40px"
                   className="object-cover rounded-lg"
                   priority
                 />
@@ -148,7 +150,6 @@ export default function ModernNavbar() {
             {/* Navigasi Desktop (Modern) */}
             <div className="hidden md:flex items-center bg-gray-100/70 dark:bg-gray-800/70 p-1 rounded-full border border-gray-200/50 dark:border-gray-700/50">
               {navLinks.map((link) => {
-                // UPDATE: isActive sekarang berdasarkan activeSection state
                 const isActive = activeSection === link.id;
                 return (
                   <Link
@@ -160,8 +161,6 @@ export default function ModernNavbar() {
                         : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                     }`}
                     onClick={() => {
-                      // Jika link kontak diklik, update state secara manual
-                      // karena section kontak mungkin tidak masuk viewport saat di-scroll
                       if (link.id === "kontak") setActiveSection("kontak");
                     }}
                   >
@@ -182,9 +181,6 @@ export default function ModernNavbar() {
                 );
               })}
             </div>
-
-            {/* Tombol CTA di desktop dihapus karena "Kontak" sudah ada di nav utama */}
-            {/* <div className="hidden md:flex"> ... </div> */}
 
             {/* Tombol Menu Mobile */}
             <button
@@ -210,6 +206,8 @@ export default function ModernNavbar() {
               <div className="px-6 py-4 space-y-2">
                 {navLinks.map((link) => {
                   const isActive = activeSection === link.id;
+                  // FIX: Komponen harus diawali huruf besar untuk dirender
+                  const Icon = link.icon;
                   return (
                     <motion.div key={link.name} variants={mobileLinkVariant}>
                       <Link
@@ -221,7 +219,8 @@ export default function ModernNavbar() {
                             : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-gray-800/60"
                         }`}
                       >
-                        <link.icon
+                        {/* FIX: Gunakan variabel 'Icon' yang sudah dikapitalisasi */}
+                        <Icon
                           className={`w-5 h-5 ${
                             isActive ? "text-orange-500" : ""
                           }`}
@@ -231,7 +230,6 @@ export default function ModernNavbar() {
                     </motion.div>
                   );
                 })}
-                {/* Tombol kontak di mobile dihapus karena sudah ada di list */}
               </div>
             </motion.div>
           )}

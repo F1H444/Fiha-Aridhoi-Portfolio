@@ -1,21 +1,17 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react"; // UPDATE: Hapus useRef yang tidak digunakan
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import { Github, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion"; // Impor motion
-// GSAP dan ScrollTrigger dihapus
+import { motion } from "framer-motion";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-// Registrasi plugin GSAP tidak diperlukan lagi
-
 const projectsData = [
-  // ... (data proyek Anda tidak berubah)
   {
     id: 1,
     title: "SIKALORI - AI Calorie Checker",
@@ -70,30 +66,28 @@ const projectsData = [
 
 const Projects = () => {
   const title = "Proyek Saya";
-  // containerRef dan useGSAP dihapus
 
-  const backEase = [0.34, 1.56, 0.64, 1]; // Mirip 'back.out(1.7)'
+  // UPDATE: Variabel backEase dihapus
   const viewportConfig = { once: true, amount: 0.2 }; // Trigger lebih awal
 
   return (
     <main
       id="project"
-      // ref={containerRef} dihapus
       className={`${inter.variable} font-sans relative flex min-h-screen w-full flex-col items-center overflow-hidden bg-black text-white p-8 md:p-16`}
     >
       <div className="w-full max-w-7xl">
         <h1 className="text-4xl font-extrabold tracking-tighter text-white sm:text-6xl text-center">
           {" "}
-          {/* gsap-title-project dihapus */}
           {title.split("").map((letter, index) => (
             <motion.span
               key={index}
-              className="inline-block" // gsap-title-letter dan opacity-0 dihapus
+              className="inline-block"
               initial={{ y: 30, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{
                 duration: 0.6,
-                ease: backEase,
+                // UPDATE: Menggunakan string literal secara langsung
+                ease: "backOut",
                 delay: index * 0.05,
               }}
               viewport={viewportConfig}
@@ -103,7 +97,7 @@ const Projects = () => {
           ))}
         </h1>
         <motion.p
-          className="mt-4 text-center text-lg text-gray-400 max-w-2xl mx-auto" // gsap-project-desc dan opacity-0 dihapus
+          className="mt-4 text-center text-lg text-gray-400 max-w-2xl mx-auto"
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
@@ -114,7 +108,6 @@ const Projects = () => {
         </motion.p>
         <div className="mt-24 flex flex-col gap-24 md:gap-32">
           {projectsData.map((project, index) => {
-            // Logika untuk menentukan arah animasi
             const isEven = index % 2 === 0;
             const imageX = isEven ? -100 : 100;
             const textX = isEven ? 100 : -100;
@@ -123,10 +116,10 @@ const Projects = () => {
             return (
               <section
                 key={project.id}
-                className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16" // gsap-project-section dan opacity-0 dihapus
+                className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16"
               >
                 <motion.div
-                  className={`w-full transition-transform duration-300 hover:scale-103 ${orderClass}`} // Kelas orderClass diterapkan di sini
+                  className={`w-full transition-transform duration-300 hover:scale-103 ${orderClass}`}
                   initial={{ x: imageX, opacity: 0 }}
                   whileInView={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
@@ -138,44 +131,44 @@ const Projects = () => {
                     width={1200}
                     height={900}
                     priority={index < 2}
-                    className="rounded-xl object-cover shadow-2xl shadow-black/30 border border-gray-800" // gsap-project-image dihapus
+                    className="rounded-xl object-cover shadow-2xl shadow-black/30 border border-gray-800"
                   />
                 </motion.div>
                 <div className="flex flex-col justify-center">
                   <motion.h3
-                    className="text-3xl font-bold tracking-tight text-orange-500 sm:text-4xl" // gsap-project-text-item dihapus
+                    className="text-3xl font-bold tracking-tight text-orange-500 sm:text-4xl"
                     initial={{ x: textX, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
                       ease: "easeOut",
-                      delay: 0.2, // Stagger manual
+                      delay: 0.2,
                     }}
                     viewport={viewportConfig}
                   >
                     {project.title}
                   </motion.h3>
                   <motion.p
-                    className="mt-6 text-lg text-gray-300 leading-relaxed" // gsap-project-text-item dihapus
+                    className="mt-6 text-lg text-gray-300 leading-relaxed"
                     initial={{ x: textX, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
                       ease: "easeOut",
-                      delay: 0.3, // Stagger manual
+                      delay: 0.3,
                     }}
                     viewport={viewportConfig}
                   >
                     {project.description}
                   </motion.p>
                   <motion.div
-                    className="mt-6 flex flex-wrap gap-3" // gsap-project-text-item dihapus
+                    className="mt-6 flex flex-wrap gap-3"
                     initial={{ x: textX, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
                       ease: "easeOut",
-                      delay: 0.4, // Stagger manual
+                      delay: 0.4,
                     }}
                     viewport={viewportConfig}
                   >
@@ -189,13 +182,13 @@ const Projects = () => {
                     ))}
                   </motion.div>
                   <motion.div
-                    className="mt-8 flex items-center gap-6" // gsap-project-text-item dihapus
+                    className="mt-8 flex items-center gap-6"
                     initial={{ x: textX, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
                       ease: "easeOut",
-                      delay: 0.5, // Stagger manual
+                      delay: 0.5,
                     }}
                     viewport={viewportConfig}
                   >
