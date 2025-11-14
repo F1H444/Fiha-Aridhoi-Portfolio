@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react"; // UPDATE: Hapus useRef yang tidak digunakan
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import { Github, ExternalLink } from "lucide-react";
@@ -14,61 +13,60 @@ const inter = Inter({
 const projectsData = [
   {
     id: 1,
-    title: "SIKALORI - AI Calorie Checker",
+    title: "Kalkulator Pintar",
     description:
-      "Website Cek Kalori yang menggunakan AI untuk mendeteksi dan menghitung kalori dari foto makanan. Dibangun dengan Next.js untuk performa tinggi.",
-    imageUrl: "/project/sikalori.png",
-    techStack: ["Next.js", "React", "Tailwind CSS", "Framer-Motion", "Gsap"],
-    linkGithub: "#",
-    linkLive: "#",
+      "Website kalkulator modern yang dibangun menggunakan Next.js 16 dan React 19. Website ini menampilkan desain glassmorphism (efek kaca) yang elegan dan interaktif, ditenagai oleh TailwindCSS 4 dan Framer Motion.",
+    imageUrl: "/project/kalkulator.webp",
+    techStack: ["Next.js", "React", "Tailwind CSS", "Framer-Motion"],
+    linkGithub: "https://github.com/F1H444/KalkulatorPintar",
+    linkLive: "https://kalkulator-pintar.vercel.app/",
   },
   {
     id: 2,
     title: "SMKN2 SBY V2.0",
     description:
       "Proyek redesign total yang dibangun menggunakan Next.js 16 (App Router) dengan fokus pada performa tinggi, animasi yang kaya, dan pengalaman pengguna yang modern. Proyek ini bukan sekadar website statis, melainkan aplikasi web interaktif penuh yang menampilkan berbagai fitur canggih untuk profil sekolah.",
-    imageUrl: "/project/smkn2.png",
+    imageUrl: "/project/smkn2.webp",
     techStack: ["Next.js", "React", "Tailwind CSS", "Framer-Motion", "Gsap"],
     linkGithub: "https://github.com/F1H444/SMKN2-SBY-v2.0",
     linkLive: "https://smkn-2-sby-v2-0.vercel.app/",
   },
   {
     id: 3,
-    title: "Kalkulator Pintar",
+    title: "PDMJ",
     description:
-      "Website kalkulator modern yang dibangun menggunakan Next.js 16 dan React 19. Website ini menampilkan desain glassmorphism (efek kaca) yang elegan dan interaktif, ditenagai oleh TailwindCSS 4 dan Framer Motion.",
-    imageUrl: "/project/kalkulator.png",
-    techStack: ["Next.js", "React", "Tailwind CSS", "AI/ML", "Vercel"],
-    linkGithub: "https://github.com/F1H444/KalkulatorPintar",
-    linkLive: "https://kalkulator-pintar.vercel.app/",
+      "Di bawah arahan mentor, saya diamanatkan untuk melakukan revisi dan optimasi responsiveness pada website tersebut. Fokus utama tugas ini adalah memastikan layout dan seluruh elemen website dapat beradaptasi dan tampil dengan optimal ketika diakses melalui perangkat tablet (khususnya iPad) dan mobile.",
+    imageUrl: "/project/pdmj.webp",
+    techStack: ["Laravel", "Bootstrap", "AOS", "Swiper JS", "SCSS"],
+    linkGithub: "", // Kosong, tombol tidak akan muncul
+    linkLive: "https://pdmj.co.id/",
   },
   {
     id: 4,
-    title: "SIKALORI - AI Calorie Checker",
+    title: "AIA FLOOR",
     description:
-      "Aplikasi web cerdas yang menggunakan AI untuk mendeteksi dan menghitung kalori dari foto makanan. Dibangun dengan Next.js untuk performa tinggi.",
-    imageUrl: "/project/sikalori.png",
-    techStack: ["Next.js", "React", "Tailwind CSS", "AI/ML", "Vercel"],
-    linkGithub: "#",
-    linkLive: "#",
+      "Berkontribusi dalam peningkatan aspek responsif website AIA Floor (aiafloor.co.id). Saya berfokus pada perbaikan layout mobile dengan mengidentifikasi dan mengatasi masalah kurangnya padding horizontal",
+    imageUrl: "/project/aia.webp",
+    techStack: ["Laravel", "Bootstrap", "AOS", "Swiper JS", "SCSS"],
+    linkGithub: "", // Kosong, tombol tidak akan muncul
+    linkLive: "https://aiafloor.co.id/",
   },
   {
     id: 5,
-    title: "SIKALORI - AI Calorie Checker",
+    title: "TinyGambar",
     description:
-      "Aplikasi web cerdas yang menggunakan AI untuk mendeteksi dan menghitung kalori dari foto makanan. Dibangun dengan Next.js untuk performa tinggi.",
-    imageUrl: "/project/sikalori.png",
+      "Web modern untuk mengoptimalkan ukuran gambar (kompresi dan konversi ke WebP) yang berjalan sepenuhnya di sisi klien (client-side)",
+    imageUrl: "/project/tiny.webp",
     techStack: ["Next.js", "React", "Tailwind CSS", "AI/ML", "Vercel"],
-    linkGithub: "#",
-    linkLive: "#",
+    linkGithub: "https://github.com/F1H444/TINYGambar",
+    linkLive: "https://tinygambar.vercel.app/",
   },
 ];
 
 const Projects = () => {
   const title = "Proyek Saya";
 
-  // UPDATE: Variabel backEase dihapus
-  const viewportConfig = { once: true, amount: 0.2 }; // Trigger lebih awal
+  const viewportConfig = { once: true, amount: 0.2 };
 
   return (
     <main
@@ -86,7 +84,6 @@ const Projects = () => {
               whileInView={{ y: 0, opacity: 1 }}
               transition={{
                 duration: 0.6,
-                // UPDATE: Menggunakan string literal secara langsung
                 ease: "backOut",
                 delay: index * 0.05,
               }}
@@ -192,15 +189,19 @@ const Projects = () => {
                     }}
                     viewport={viewportConfig}
                   >
-                    <a
-                      href={project.linkGithub}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-gray-300 transition-colors hover:text-white group"
-                    >
-                      <Github className="h-5 w-5" />
-                      <span className="group-hover:underline">GitHub</span>
-                    </a>
+                    {/* Kondisi: Hanya tampilkan jika linkGithub ada isinya */}
+                    {project.linkGithub && (
+                      <a
+                        href={project.linkGithub}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-gray-300 transition-colors hover:text-white group"
+                      >
+                        <Github className="h-5 w-5" />
+                        <span className="group-hover:underline">GitHub</span>
+                      </a>
+                    )}
+
                     <a
                       href={project.linkLive}
                       target="_blank"

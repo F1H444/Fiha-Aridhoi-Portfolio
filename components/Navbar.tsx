@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X, Home, User, Code, LayoutGrid, Mail } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion"; // Import Variants
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export default function ModernNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -62,13 +62,41 @@ export default function ModernNavbar() {
     return () => sections.forEach((section) => observer.unobserve(section));
   }, [navLinks]);
 
-  // Definisikan varian dengan tipe Variants
+  // --- FUNGSI BARU UNTUK SMOOTH SCROLL ---
+  const handleSmoothScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    linkId: string
+  ) => {
+    // 1. Mencegah perilaku default (lompat instan)
+    e.preventDefault();
+
+    // 2. Cari elemen target berdasarkan ID
+    const targetElement = document.getElementById(linkId);
+
+    if (targetElement) {
+      // 3. Lakukan scroll halus ke elemen tersebut
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    // 4. Tutup menu mobile jika sedang terbuka
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+
+    // 5. Menjaga logika khusus untuk link 'kontak' dari kode Anda
+    if (linkId === "kontak") {
+      setActiveSection("kontak");
+    }
+  };
+  // --- AKHIR FUNGSI BARU ---
+
   const mobileMenuVariant: Variants = {
     hidden: {
       opacity: 0,
       y: -20,
-      // HAPUS TRANSISI DARI 'hidden' (INITIAL STATE)
-      // transition: { duration: 0.2, ease: "easeOut" }, // <-- INI PENYEBAB ERROR
     },
     visible: {
       opacity: 1,
@@ -115,7 +143,7 @@ export default function ModernNavbar() {
             <Link
               href="/#beranda"
               className="flex items-center space-x-3 group"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleSmoothScroll(e, "beranda")} // <-- DIPERBARUI
             >
               <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform duration-300 ease-in-out">
                 <Image
@@ -145,9 +173,7 @@ export default function ModernNavbar() {
                         ? "text-gray-900 dark:text-gray-100"
                         : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                     }`}
-                    onClick={() => {
-                      if (link.id === "kontak") setActiveSection("kontak");
-                    }}
+                    onClick={(e) => handleSmoothScroll(e, link.id)} // <-- DIPERBARUI
                   >
                     {link.name}
                     {isActive && (
@@ -196,7 +222,7 @@ export default function ModernNavbar() {
                     <motion.div key={link.name} variants={mobileLinkVariant}>
                       <Link
                         href={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={(e) => handleSmoothScroll(e, link.id)} // <-- DIPERBARUI
                         className={`flex items-center space-x-3 px-4 py-3 font-medium rounded-lg transition-all duration-300 transform hover:translate-x-1 ${
                           isActive
                             ? "bg-gray-100/60 dark:bg-gray-800/60 text-black dark:text-white"
