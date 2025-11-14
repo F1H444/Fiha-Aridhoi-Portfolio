@@ -147,7 +147,7 @@ export default function ModernNavbar() {
             >
               <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform duration-300 ease-in-out">
                 <Image
-                  src="/images/logo.png"
+                  src="/images/fiha.webp"
                   alt="Logo"
                   fill
                   sizes="(max-width: 768px) 36px, 40px"

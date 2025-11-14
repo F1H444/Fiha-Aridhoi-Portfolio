@@ -238,7 +238,7 @@ const Contact: React.FC = () => {
                 <p className="text-gray-400 mb-4">Temukan saya di:</p>
                 <div className="flex gap-4">
                   <motion.a
-                    href="https://github.com/fihaaridhoi"
+                    href="https://github.com/F1H444/"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, y: -2 }}
@@ -246,16 +246,6 @@ const Contact: React.FC = () => {
                     className="p-3 bg-gray-700/50 rounded-lg hover:bg-orange-500/20 hover:text-orange-500 text-gray-300 transition-all duration-300"
                   >
                     <Github className="w-6 h-6" />
-                  </motion.a>
-                  <motion.a
-                    href="https://linkedin.com/in/fihaaridhoi"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-3 bg-gray-700/50 rounded-lg hover:bg-orange-500/20 hover:text-orange-500 text-gray-300 transition-all duration-300"
-                  >
-                    <Linkedin className="w-6 h-6" />
                   </motion.a>
                 </div>
               </div>
