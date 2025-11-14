@@ -6,7 +6,7 @@ Dibuat dari awal dengan fokus pada kinerja, desain interaktif, dan animasi yang 
 
 ➡️ Kunjungi Live Demo
 
-[(Ganti dengan URL Vercel/hosting Anda jika sudah ada)](https://fiha-aridhoi-portfolio-dfox.vercel.app/)
+https://fiha-aridhoi-portfolio-dfox.vercel.app/
 
 Keahlian
 
