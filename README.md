@@ -6,21 +6,7 @@ Dibuat dari awal dengan fokus pada kinerja, desain interaktif, dan animasi yang 
 
 ➡️ Kunjungi Live Demo
 
-(Ganti dengan URL Vercel/hosting Anda jika sudah ada)
-
-📸 Tampilan Proyek
-
-Berikut adalah beberapa cuplikan dari website:
-
-Halaman Hero
-
-Proyek Unggulan
-
-<img src="public/project/smkn2.png" alt="Hero Section" width="300">
-
-<img src="public/project/kalkulator.png" alt="Proyek Kalkulator" width="300">
-
-<img src="public/project/sikalori.png" alt="Proyek Sikalori" width="300">
+https://fiha-aridhoi-portfolio-dfox.vercel.app/
 
 Keahlian
 
