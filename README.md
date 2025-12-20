@@ -8,7 +8,6 @@
 
 <p>
 <a href="https://fihaaridhoi.vercel.app/">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Live_Demo-Klik_Disini-blueviolet%3Fstyle%3Dfor-the-badge%26logo%3Dvercel" alt="Live Demo" />
 </a>
 </p>
 
