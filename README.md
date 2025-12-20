@@ -7,14 +7,8 @@
 <h1>✨ Fiha Aridhoi - Portfolio Pribadi</h1>
 
 <p>
-<a href="https://fihaaridhoi.vercel.app/">
+[<a href="https://fihaaridhoi.vercel.app/">](https://fihaaridhoi.vercel.app/)
 </a>
-</p>
-
-<p>
-<img src="https://www.google.com/search?q=https://img.shields.io/github/stars/F1H444/Fiha-Aridhoi-Portfolio%3Fstyle%3Dflat-square%26logo%3Dgithub%26color%3Dgold" alt="stars" />
-<img src="https://www.google.com/search?q=https://img.shields.io/github/forks/F1H444/Fiha-Aridhoi-Portfolio%3Fstyle%3Dflat-square%26logo%3Dgithub%26color%3Dblue" alt="forks" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Node.js-v20.9.0%2B-green%3Fstyle%3Dflat-square%26logo%3Dnode.js" alt="Node Version" />
 </p>
 
 <p align="center">
