@@ -64,7 +64,7 @@ const ProjectCard = ({ project, index, t }: any) => {
       ref={containerRef}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
       viewport={{ once: true, margin: "-10%" }}
       className="group relative border-b border-white/10 py-12 md:py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center"
     >
