@@ -1,136 +1,116 @@
-Fiha Aridhoi - Portfolio Pribadi
+<div align="center">
 
-Selamat datang di kode sumber untuk website portfolio pribadi saya. Proyek ini adalah sebuah pameran digital yang menampilkan keahlian, proyek, dan perjalanan saya sebagai seorang Frontend Developer.
+<!-- Header Banner menggunakan Capsule Render -->
 
-Dibuat dari awal dengan fokus pada kinerja, desain interaktif, dan animasi yang canggih, website ini mencerminkan hasrat saya untuk menciptakan pengalaman web yang hidup dan berkesan.
+<img src="https://www.google.com/search?q=https://capsule-render.vercel.app/render%3Ftype%3Dsoft%26color%3Dauto%26height%3D250%26section%3Dheader%26text%3DFiha%2520Aridhoi%26fontSize%3D70%26animation%3DfadeIn" width="100%" />
 
-➡️ Kunjungi Live Demo
+<h1>✨ Fiha Aridhoi - Portfolio Pribadi</h1>
 
-https://fiha-aridhoi-portfolio-dfox.vercel.app/
+<p>
+[<a href="https://fihaaridhoi.vercel.app/">](https://fihaaridhoi.vercel.app/)
+</a>
+</p>
 
-Keahlian
+<p align="center">
+<strong>Selamat datang di kode sumber website portofolio pribadi saya.</strong>
+<br />
+Sebuah pameran digital yang menampilkan keahlian, proyek, dan perjalanan saya sebagai seorang <b>Frontend Developer</b>.
+</p>
 
-(Anda bisa mengganti gambar di atas dengan screenshot yang lebih relevan dari live demo)
+</div>
+
+<hr />
+
+🌟 Tentang Proyek
+
+Website ini dibuat dari nol dengan fokus pada kinerja tinggi, desain interaktif, dan animasi yang canggih. Proyek ini mencerminkan hasrat saya untuk menciptakan pengalaman web yang hidup, berkesan, dan fungsional.
 
 ✨ Fitur Unggulan
 
-Proyek ini bukan sekadar portofolio statis. Berikut adalah beberapa fitur teknis utamanya:
-
-🚀 Kinerja Cepat: Dibangun dengan Next.js 16 (App Router) dan React 19 untuk server-side rendering (SSR), pemisahan kode otomatis, dan pemuatan halaman secepat kilat.
+🚀 Kinerja Cepat: Menggunakan Next.js 16 (App Router) dan React 19 untuk server-side rendering (SSR) dan pemuatan halaman secepat kilat.
 
 ✨ Animasi Canggih:
 
-Framer Motion: Digunakan untuk sebagian besar animasi scroll-triggered (saat di-scroll) dan transisi halaman, memberikan nuansa yang mulus dan modern.
+Framer Motion: Animasi scroll-triggered dan transisi halaman yang mulus.
 
-GSAP (GreenSock): Dimanfaatkan untuk animasi yang lebih kompleks dan berbasis timeline, seperti pada bagian Hero dan About Me.
+GSAP (GreenSock): Animasi kompleks berbasis timeline pada bagian Hero dan About Me.
 
-📜 Smooth Scrolling Premium: Menggunakan Lenis (@studio-freight/lenis) untuk memberikan pengalaman scroll yang sangat mulus dan sinematik di seluruh halaman.
+📜 Smooth Scrolling: Integrasi Lenis (@studio-freight/lenis) untuk pengalaman navigasi yang sinematik.
 
-⏳ Preloader Kustom: Dilengkapi preloader yang menghitung persentase dari 0% hingga 100%. Animasi utama di halaman Hero ditahan hingga preloader selesai, memastikan semua elemen tampil dengan sempurna.
+⏳ Preloader Kustom: Efek loading 0% hingga 100% yang memastikan seluruh aset siap sebelum ditampilkan.
 
-📬 Formulir Kontak Fungsional (Tanpa Backend!): Bagian kontak terintegrasi langsung dengan EmailJS, memungkinkan pengunjung mengirim email langsung dari website tanpa memerlukan server backend.
+📬 Contact Form (EmailJS): Formulir fungsional tanpa backend, mengirim pesan langsung ke inbox saya.
 
-🧭 Navigasi Cerdas: Navbar secara otomatis mendeteksi bagian (section) mana yang sedang dilihat pengguna saat men-scroll halaman dan meng-highlight tautan yang aktif.
+🧭 Smart Navigation: Navbar dengan fitur auto-highlight berdasarkan posisi scroll pengguna.
 
 🛠️ Tumpukan Teknologi (Tech Stack)
 
-Daftar lengkap teknologi yang digunakan dalam proyek ini:
+Komponen
 
-Framework: Next.js 16 (App Router)
+Teknologi
 
-Library: React 19
+Framework & Library
 
-Bahasa: TypeScript
+Next.js 16 (App Router), React 19, TypeScript
 
-Styling: TailwindCSS 4
+Styling
 
-Animasi: Framer Motion & GSAP
+TailwindCSS 4
 
-Smooth Scroll: Lenis
+Animasi
 
-Formulir Kontak: EmailJS
+Framer Motion, GSAP
 
-Ikon: Lucide React & React Icons
+Utilities
 
-Linting: ESLint
+Lenis (Smooth Scroll), Lucide React, React Icons
 
-Utilities: tailwind-merge
+Layanan
 
-📂 Struktur Proyek
+EmailJS (Contact Form), Vercel (Deployment)
 
-/
-├── app/
-│   ├── (beranda)/         # Grup rute utama untuk halaman portfolio
-│   │   ├── hero.tsx       # Bagian Hero
-│   │   ├── tentang.tsx    # Bagian Tentang Saya
-│   │   ├── skill.tsx      # Bagian Keahlian
-│   │   ├── project.tsx    # Bagian Proyek
-│   │   ├── kontak.tsx     # Bagian Kontak (dengan EmailJS)
-│   │   └── page.tsx       # Halaman utama yang menggabungkan semua bagian
-│   │
-│   ├── layout.tsx         # Layout utama (root layout)
-│   └── globals.css        # CSS global (Tailwind)
-│
-├── components/
-│   ├── Navbar.tsx         # Komponen Navbar
-│   ├── Preloader.tsx      # Komponen Preloader (0-100%)
-│   └── SmoothScroll.tsx   # Wrapper untuk Lenis smooth scroll
-│
-├── contexts/
-│   └── PreloaderContext.tsx # Context untuk state preloader
-│
-├── public/
-│   ├── images/
-│   │   └── fiha.webp      # Foto profil
-│   └── project/
-│       ├── sikalori.png
-│       ├── smkn2.png
-│       └── kalkulator.png
-│
-├── package.json
-└── tsconfig.json
+🚀 Menjalankan Secara Lokal
 
-
-🚀 Cara Menjalankan Secara Lokal
-
-Anda dapat menjalankan salinan proyek ini di mesin lokal Anda untuk pengujian atau pengembangan.
+Ikuti langkah-langkah berikut untuk mencoba proyek ini di mesin lokal Anda:
 
 1. Prasyarat
 
-Pastikan Anda memiliki Node.js (v20.9.0 atau lebih baru) dan npm terinstal.
+Node.js (v20.9.0 atau lebih baru)
 
-2. Kloning Repositori
+npm / yarn / pnpm
 
+2. Kloning & Instalasi
+
+# Kloning repositori
 git clone [https://github.com/F1H444/Fiha-Aridhoi-Portfolio.git](https://github.com/F1H444/Fiha-Aridhoi-Portfolio.git)
+
+# Masuk ke folder
 cd Fiha-Aridhoi-Portfolio
 
-
-(Ganti dengan URL repo Anda jika berbeda)
-
-3. Instal Dependensi
-
+# Instal dependensi
 npm install
 
 
-4. Konfigurasi Variabel Lingkungan
+3. Konfigurasi Environment
 
-Proyek ini menggunakan EmailJS untuk formulir kontak. Anda perlu membuat akun gratis di EmailJS dan mendapatkan kredensial Anda.
-
-Buat file baru bernama .env.local di root proyek dan tambahkan variabel berikut:
-
-# Ganti dengan kredensial dari dashboard EmailJS Anda
-# Digunakan di app/(beranda)/kontak.tsx
+Buat file .env.local di root direktori dan masukkan kredensial EmailJS Anda:
 
 EMAILJS_SERVICE_ID="service_XXXXXXX"
 EMAILJS_TEMPLATE_ID="template_XXXXXXX"
 EMAILJS_PUBLIC_KEY="XXXXXXXXXXXXXXXX"
 
 
-5. Jalankan Server Pengembangan
+4. Jalankan Server
 
 npm run dev
 
 
-Buka http://localhost:3000 di browser Anda untuk melihat hasilnya.
+Buka http://localhost:3000 di browser Anda.
 
-Dibuat dengan ❤️ oleh Fiha Aridhoi
+🤝 Mari Terhubung
+
+Saya selalu terbuka untuk kolaborasi atau sekadar bertukar pikiran mengenai pengembangan web.
+
+GitHub: @F1H444
+
+Email: fihaaridhoi@example.com
