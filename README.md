@@ -4,10 +4,10 @@
 
 <img src="https://www.google.com/search?q=https://capsule-render.vercel.app/render%3Ftype%3Dsoft%26color%3Dauto%26height%3D250%26section%3Dheader%26text%3DFiha%2520Aridhoi%26fontSize%3D70%26animation%3DfadeIn" width="100%" />
 
-<h1>✨ Fiha Aridhoi - Portfolio Pribadi ✨</h1>
+<h1>✨ Fiha Aridhoi - Portfolio Pribadi</h1>
 
 <p>
-<a href="https://fiha-aridhoi-portfolio-dfox.vercel.app/">
+<a href="https://fihaaridhoi.vercel.app/">
 <img src="https://www.google.com/search?q=https://img.shields.io/badge/Live_Demo-Klik_Disini-blueviolet%3Fstyle%3Dfor-the-badge%26logo%3Dvercel" alt="Live Demo" />
 </a>
 </p>
@@ -76,20 +76,6 @@ Layanan
 
 EmailJS (Contact Form), Vercel (Deployment)
 
-📂 Struktur Proyek
-
-/
-├── app/
-│   ├── (beranda)/          # Grup rute utama (Hero, Tentang, Skill, Project, Kontak)
-│   ├── layout.tsx          # Root layout
-│   └── globals.css         # CSS global & Tailwind
-├── components/             # Komponen UI (Navbar, Preloader, SmoothScroll)
-├── contexts/               # Manajemen state (PreloaderContext)
-├── public/                 # Aset statis (Gambar & Ikon Proyek)
-├── package.json
-└── tsconfig.json
-
-
 🚀 Menjalankan Secara Lokal
 
 Ikuti langkah-langkah berikut untuk mencoba proyek ini di mesin lokal Anda:
@@ -135,7 +121,3 @@ Saya selalu terbuka untuk kolaborasi atau sekadar bertukar pikiran mengenai peng
 GitHub: @F1H444
 
 Email: fihaaridhoi@example.com
-
-<div align="center">
-Dibuat dengan ❤️ oleh <b>Fiha Aridhoi</b>
-</div>
