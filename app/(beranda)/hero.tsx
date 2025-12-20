@@ -1,174 +1,155 @@
-// components/Hero.tsx
-
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Inter } from "next/font/google";
-import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { usePreloader } from "@/contexts/PreloaderContext";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const MotionLink = motion(Link);
+import { ArrowRight, MapPin, Terminal, Sparkles, Layers, Cpu, MousePointer2 } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const Hero = () => {
-  const { isPreloading } = usePreloader();
-  const bigText = "FIHA ARIDHOI";
-  const cleanBigText = bigText.replace(/\s/g, " ");
+  const { language } = useLanguage();
+  const t = translations[language].hero;
+  const containerRef = useRef(null);
+  
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
 
-  // Fungsi helper untuk prop 'animate'
-  const getAnimateProps = (target: any) => {
-    return isPreloading ? undefined : target;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+    },
   };
 
   return (
-    <main
-      id="beranda"
-      className={`${inter.variable} font-sans relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black text-white`}
+    <section 
+      ref={containerRef}
+      className="relative min-h-[110vh] w-full bg-[#000000] text-white flex items-center justify-center py-24 px-6 overflow-hidden"
     >
-      {/* --- GAMBAR ORANG --- */}
-      <motion.div
-        // UPDATE: bottom-0 (mobile) agar lebih turun, w-[260px] agar tidak terlalu besar di mobile
-        className="pointer-events-none absolute bottom-0 sm:bottom-12 md:bottom-16 left-1/2 z-10 -translate-x-1/2 w-[260px] sm:w-[380px] md:w-[450px] lg:w-[550px] xl:w-[650px]"
-        initial={{ y: 200, scale: 0.9, opacity: 0 }}
-        animate={getAnimateProps({ y: 0, scale: 1, opacity: 1 })}
-        transition={{
-          duration: 1.2,
-          ease: [0.22, 1, 0.36, 1],
-          delay: 0.4,
-        }}
-      >
-        <Image
-          src="/images/fiha.webp"
-          alt="Fiha Aridhoi | Photo"
-          width={800}
-          height={1000}
-          priority
-          className="h-auto w-full object-contain"
-        />
+      {/* Background Decor */}
+      <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-orange-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-blue-500/5 blur-[120px] rounded-full" />
       </motion.div>
 
-      {/* --- TEXT BACKGROUND BESAR --- */}
-      <motion.h2
-        className="pointer-events-none absolute bottom-0 z-20 w-full overflow-hidden text-center font-extrabold uppercase text-white leading-none pb-2 sm:pb-4 md:pb-6 lg:pb-8"
-        style={{
-          fontSize: "clamp(1.75rem, 10vw, 25rem)",
-          letterSpacing: "-0.05em",
-        }}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10"
       >
-        {cleanBigText.split("").map((letter, index) => (
-          <motion.span
-            key={`letter-${index}`}
-            className="inline-block"
-            initial={{ y: 50, opacity: 0 }}
-            animate={getAnimateProps({ y: 0, opacity: 1 })}
-            transition={{
-              duration: 0.8,
-              ease: [0.34, 1.56, 0.64, 1],
-              delay: 0.6 + index * 0.08,
-            }}
+        {/* LEFT COLUMN */}
+        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          {/* Main Hero Card */}
+          <motion.div 
+            variants={itemVariants}
+            className="md:col-span-2 p-8 md:p-10 rounded-[2rem] bg-zinc-900/30 border border-white/5 backdrop-blur-3xl flex flex-col justify-between min-h-[380px] relative overflow-hidden group shadow-2xl"
           >
-            {letter === " " ? "\u00A0" : letter}
-          </motion.span>
-        ))}
-      </motion.h2>
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/5 border border-orange-500/20 text-[9px] font-bold tracking-[0.2em] uppercase mb-10">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
+                </span>
+                {t.available}
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.1]">
+                Frontend <br />
+                <span className="text-zinc-500 italic font-light">Designer &</span> <br />
+                Developer
+              </h1>
+            </div>
+            
+            <div className="relative z-10 mt-10 flex flex-wrap gap-6 items-end justify-between">
+              <p className="text-zinc-400 max-w-[280px] text-sm leading-relaxed font-light">
+                {t.description}
+              </p>
+              
+              <Link href="/#kontak" className="group relative inline-flex items-center gap-3 bg-white text-black px-7 py-3.5 rounded-full text-xs font-bold transition-all duration-300 hover:pr-10 active:scale-95 overflow-hidden">
+                <span className="relative z-10 transition-colors duration-300 group-hover:text-white">{t.contactBtn}</span>
+                <ArrowRight className="relative z-10 w-3.5 h-3.5 transition-all duration-300 group-hover:text-white group-hover:translate-x-1" />
+                {/* Precise Hover Fill Effect */}
+                <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+              </Link>
+            </div>
+          </motion.div>
 
-      {/* --- GRADIENT FADE BOTTOM --- */}
-      <div className="absolute bottom-0 left-0 z-30 h-32 sm:h-40 md:h-48 w-full bg-gradient-to-t from-black via-black/70 to-transparent pointer-events-none"></div>
-
-      {/* --- KONTEN UTAMA (TEXT & TOMBOL) --- */}
-      <div
-        // UPDATE: pt-20 (mobile) menaikkan konten ke atas. pb-24 memberi ruang bawah.
-        className="relative z-40 grid w-full max-w-7xl grid-cols-1 p-6 min-h-screen
-                   items-start pt-20 pb-24 sm:p-8 sm:pt-40 sm:pb-0
-                   md:items-center md:pt-12 md:p-12"
-      >
-        <div
-          className="flex flex-col w-full gap-6 sm:gap-8
-                     md:grid md:grid-cols-12 md:gap-12 md:items-center"
-        >
-          {/* Bagian Kiri / Atas (Judul) */}
-          <div
-            className="flex flex-col justify-center space-y-4 md:space-y-6
-                       items-center text-center
-                       md:col-span-6 lg:col-span-5 md:items-start md:text-left"
+          {/* Card: Tech Stack */}
+          <motion.div 
+            variants={itemVariants} 
+            whileHover={{ y: -5 }}
+            className="p-6 rounded-[1.5rem] bg-zinc-900/20 border border-white/5 backdrop-blur-md flex flex-col justify-between group transition-colors hover:bg-zinc-800/40"
           >
-            <motion.div
-              className="flex w-fit items-center gap-2 sm:gap-3 rounded-full border border-gray-800 bg-gray-900/50 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-300 backdrop-blur-sm"
-              initial={{ y: 50, opacity: 0 }}
-              animate={getAnimateProps({ y: 0, opacity: 1 })}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                delay: 0.2,
-              }}
-            >
-              <span className="relative flex h-2 w-2 sm:h-3 sm:w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-orange-500"></span>
-              </span>
-              Available to Work
-            </motion.div>
-            <motion.h1
-              className="text-4xl font-extrabold tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
-              initial={{ y: 50, opacity: 0 }}
-              animate={getAnimateProps({ y: 0, opacity: 1 })}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                delay: 0.35,
-              }}
-            >
-              Frontend Developer
-            </motion.h1>
-          </div>
+            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6 border border-orange-500/10">
+              <Layers className="w-5 h-5 text-orange-500" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold mb-1">Architecture</h3>
+              <p className="text-zinc-500 text-[11px] leading-relaxed">Building scalable apps with Next.js & TypeScript.</p>
+            </div>
+          </motion.div>
 
-          {/* Bagian Kanan / Bawah (Deskripsi & Tombol) */}
-          <div
-            className="flex flex-col justify-center space-y-6 lg:space-y-8
-                       items-center text-center
-                       md:col-span-6 lg:col-span-5 lg:col-start-8 md:items-end md:text-right"
+          {/* Card: Location */}
+          <motion.div 
+            variants={itemVariants} 
+            whileHover={{ y: -5 }}
+            className="p-6 rounded-[1.5rem] bg-zinc-900/20 border border-white/5 backdrop-blur-md flex flex-col justify-between group transition-colors hover:bg-zinc-800/40"
           >
-            <motion.p
-              className="max-w-md text-base text-gray-400 sm:text-lg"
-              initial={{ y: 50, opacity: 0 }}
-              animate={getAnimateProps({ y: 0, opacity: 1 })}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                delay: 0.5,
-              }}
-            >
-              Hai, saya Fiha Aridhoi – seorang Pengembang Frontend yang kreatif.
-              Saya suka mewujudkan ide dengan teknologi modern seperti Next.js,
-              Tailwind, dan animasi canggih menggunakan GSAP.
-            </motion.p>
-            <MotionLink
-              href="/#kontak"
-              className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 rounded-full bg-orange-600 px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-medium text-white shadow-lg shadow-orange-900/30 transition-all duration-300 hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-800/40 hover:scale-105 active:scale-95 w-full md:w-auto block"
-              initial={{ y: 50, opacity: 0 }}
-              animate={getAnimateProps({ y: 0, opacity: 1 })}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                delay: 0.65,
-              }}
-            >
-              Kontak Saya
-              <span className="transition-transform duration-300 group-hover:translate-x-1">
-                <ArrowRight size={18} className="sm:w-5 sm:h-5" />
-              </span>
-            </MotionLink>
-          </div>
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/10">
+              <MapPin className="w-5 h-5 text-blue-500" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold mb-1">Surabaya, ID</h3>
+              <p className="text-zinc-500 text-[11px] leading-relaxed">Open for remote collaboration worldwide.</p>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </main>
+
+        {/* RIGHT COLUMN: PORTRAIT */}
+        <motion.div 
+          variants={itemVariants}
+          className="lg:col-span-4 relative group min-h-[450px] lg:h-full rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl"
+        >
+          <Image
+            src="/images/fiha.png"
+            alt="Profile"
+            fill
+            className="object-cover object-top grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 scale-[1.05] group-hover:scale-100"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+
+          {/* Floating Profile Info */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="p-4 bg-white/[0.03] backdrop-blur-2xl rounded-[1.2rem] border border-white/10 flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-sm tracking-tight text-white/90">Fiha Aridhoi</h4>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-orange-500 text-[8px] font-bold tracking-widest uppercase">Frontend Developer</p>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                 <Terminal className="w-3.5 h-3.5 text-zinc-400" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </section>
   );
 };
 

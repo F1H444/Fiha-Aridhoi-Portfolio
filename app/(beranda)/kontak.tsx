@@ -6,9 +6,10 @@ import {
   MapPin,
   ArrowRight,
   Github,
-  Linkedin,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
 // EmailJS Types
 interface EmailJSResponse {
@@ -31,10 +32,10 @@ const FormInput: React.FC<FormInputProps> = ({
   value,
   onChange,
 }) => (
-  <div id="kontak">
+  <div className="relative group">
     <label
       htmlFor={name}
-      className="block text-sm font-medium text-gray-300 mb-2"
+      className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2 block group-focus-within:text-orange-500 transition-colors"
     >
       {label}
     </label>
@@ -45,7 +46,8 @@ const FormInput: React.FC<FormInputProps> = ({
       value={value}
       onChange={onChange}
       required
-      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+      className="w-full bg-transparent border-b-2 border-zinc-800 py-4 text-xl text-white placeholder-transparent focus:outline-none focus:border-orange-500 transition-colors"
+      placeholder={label}
     />
   </div>
 );
@@ -63,10 +65,9 @@ const Contact: React.FC = () => {
     message: string;
   }>({ type: null, message: "" });
 
-  const viewportConfig = { once: true, amount: 0.3 };
-  const ease = "easeOut";
+  const { language } = useLanguage();
+  const t = translations[language].contact;
 
-  // EmailJS Configuration - GANTI DENGAN CREDENTIAL ANDA
   const EMAILJS_SERVICE_ID = "service_2zi6ee9";
   const EMAILJS_TEMPLATE_ID = "template_mqx2v6g";
   const EMAILJS_PUBLIC_KEY = "IkeM8qndfjvX-c8S_";
@@ -83,9 +84,7 @@ const Contact: React.FC = () => {
       "https://api.emailjs.com/api/v1.0/email/send",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           service_id: EMAILJS_SERVICE_ID,
           template_id: EMAILJS_TEMPLATE_ID,
@@ -95,33 +94,19 @@ const Contact: React.FC = () => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to send email");
-    }
+    if (!response.ok) throw new Error("Failed to send email");
 
-    return {
-      status: response.status,
-      text: await response.text(),
-    };
+    return { status: response.status, text: await response.text() };
   };
 
   const handleSubmit = async () => {
-    // Validasi form
     if (!formData.name || !formData.email || !formData.message) {
-      setSubmitStatus({
-        type: "error",
-        message: "Mohon lengkapi semua field.",
-      });
+      setSubmitStatus({ type: "error", message: t.form.validation.required });
       return;
     }
-
-    // Validasi email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setSubmitStatus({
-        type: "error",
-        message: "Format email tidak valid.",
-      });
+      setSubmitStatus({ type: "error", message: t.form.validation.email });
       return;
     }
 
@@ -129,177 +114,77 @@ const Contact: React.FC = () => {
     setSubmitStatus({ type: null, message: "" });
 
     try {
-      // Template parameters yang akan dikirim ke EmailJS
-      const templateParams = {
+      await sendEmail({
         from_name: formData.name,
         from_email: formData.email,
         message: formData.message,
         to_name: "Fiha Aridhoi",
-      };
-
-      await sendEmail(templateParams);
-
-      setSubmitStatus({
-        type: "success",
-        message: "Pesan berhasil terkirim!",
       });
-
-      // Reset form
+      setSubmitStatus({ type: "success", message: t.form.success });
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("Error sending email:", error);
-      setSubmitStatus({
-        type: "error",
-        message:
-          "Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via email.",
-      });
+      console.error("Error:", error);
+      setSubmitStatus({ type: "error", message: t.form.error });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section
-      id="contact"
-      className="relative min-h-screen bg-black py-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
-    >
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
-      </div>
+    <section id="kontak" className="relative min-h-screen bg-black py-24 px-4 md:px-8 border-t border-zinc-900">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+        
+        {/* LEFT COLUMN: INFO */}
+        <div className="flex flex-col justify-between">
+          <div>
+            <span className="block text-orange-500 font-mono text-sm tracking-widest mb-4">// 03. CONTACT</span>
+            <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter mb-10 leading-none">
+              GET IN <br /> TOUCH
+            </h2>
+            <p className="text-xl text-gray-400 max-w-md leading-relaxed mb-12">
+              {t.subtitle}
+            </p>
+          </div>
 
-      <div className="relative max-w-7xl mx-auto">
-        <motion.div
-          initial={{ y: -30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: ease }}
-          viewport={viewportConfig}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4">
-            Get in <span className="text-orange-500">Touch</span>
-          </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Ada proyek, pertanyaan, atau hanya ingin menyapa? Silakan kirim
-            pesan kepada saya.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* KIRI: INFORMASI KONTAK */}
-          <motion.div
-            initial={{ x: -50, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease: ease }}
-            viewport={viewportConfig}
-            className="space-y-8"
-          >
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 shadow-xl">
-              <h3 className="text-2xl font-bold text-white mb-6">
-                Informasi Kontak
-              </h3>
-
-              <div className="space-y-6">
-                <motion.a
-                  href="mailto:fihaaridhoi@gmail.com"
-                  whileHover={{ x: 5 }}
-                  className="flex items-center gap-4 text-gray-300 hover:text-orange-500 transition-colors duration-300 group"
-                >
-                  <div className="p-3 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
-                    <Mail className="w-6 h-6" />
-                  </div>
-                  <span className="text-lg">fihaaridhoi@gmail.com</span>
-                </motion.a>
-
-                <motion.a
-                  href="tel:+6282128573839"
-                  whileHover={{ x: 5 }}
-                  className="flex items-center gap-4 text-gray-300 hover:text-orange-500 transition-colors duration-300 group"
-                >
-                  <div className="p-3 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <span className="text-lg">+62 821 2857 3839</span>
-                </motion.a>
-
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className="flex items-center gap-4 text-gray-300 group"
-                >
-                  <div className="p-3 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <span className="text-lg">Surabaya, Indonesia</span>
-                </motion.div>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-gray-700">
-                <p className="text-gray-400 mb-4">Temukan saya di:</p>
-                <div className="flex gap-4">
-                  <motion.a
-                    href="https://github.com/F1H444/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-3 bg-gray-700/50 rounded-lg hover:bg-orange-500/20 hover:text-orange-500 text-gray-300 transition-all duration-300"
-                  >
-                    <Github className="w-6 h-6" />
-                  </motion.a>
+          <div className="space-y-8">
+             <a href="mailto:fihaaridhoi@gmail.com" className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors">
+                <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
+                  <Mail className="w-6 h-6" />
                 </div>
-              </div>
-            </div>
-          </motion.div>
+                <span className="text-xl md:text-3xl font-bold tracking-tight">fihaaridhoi@gmail.com</span>
+             </a>
+             
+             <a href="tel:+6282128573839" className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors">
+                <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <span className="text-xl md:text-3xl font-bold tracking-tight">+62 821 2857 3839</span>
+             </a>
 
-          {/* KANAN: FORMULIR KONTAK */}
-          <motion.div
-            initial={{ x: 50, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease: ease }}
-            viewport={viewportConfig}
-          >
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 shadow-xl space-y-6">
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: ease, delay: 0.1 }}
-                viewport={viewportConfig}
-              >
-                <FormInput
-                  label="Nama"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </motion.div>
+             <div className="group flex items-center gap-6 text-gray-400">
+                <div className="p-4 border border-zinc-800 rounded-full text-white">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <span className="text-xl md:text-2xl font-medium">Surabaya, Indonesia</span>
+             </div>
+          </div>
+          
+          <div className="mt-16">
+            <a href="https://github.com/F1H444/" target="_blank" className="text-white hover:text-orange-500 transition-colors">
+               <Github className="w-8 h-8" />
+            </a>
+          </div>
+        </div>
 
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: ease, delay: 0.2 }}
-                viewport={viewportConfig}
-              >
-                <FormInput
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </motion.div>
-
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: ease, delay: 0.3 }}
-                viewport={viewportConfig}
-              >
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Pesan Anda
+        {/* RIGHT COLUMN: FORM */}
+        <div className="bg-zinc-900/20 border border-zinc-800 p-8 md:p-12">
+           <div className="space-y-10">
+              <FormInput label={t.form.name} name="name" value={formData.name} onChange={handleChange} />
+              <FormInput label={t.form.email} name="email" type="email" value={formData.email} onChange={handleChange} />
+              
+              <div className="relative group">
+                <label htmlFor="message" className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2 block group-focus-within:text-orange-500 transition-colors">
+                  {t.form.message}
                 </label>
                 <textarea
                   id="message"
@@ -307,56 +192,31 @@ const Contact: React.FC = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows={6}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none"
+                  rows={4}
+                  className="w-full bg-transparent border-b-2 border-zinc-800 py-4 text-xl text-white placeholder-transparent focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                  placeholder={t.form.message}
                 />
-              </motion.div>
+              </div>
 
-              {/* Status Message */}
+               {/* Status Message */}
               {submitStatus.type && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`p-4 rounded-lg ${
-                    submitStatus.type === "success"
-                      ? "bg-green-500/10 border border-green-500/30 text-green-400"
-                      : "bg-red-500/10 border border-red-500/30 text-red-400"
-                  }`}
-                >
-                  {submitStatus.message}
-                </motion.div>
+                <div className={`p-4 border ${submitStatus.type === "success" ? "border-green-500 text-green-500" : "border-red-500 text-red-500"} bg-transparent font-mono text-sm`}>
+                   {submitStatus.message}
+                </div>
               )}
 
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: ease, delay: 0.4 }}
-                viewport={viewportConfig}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full bg-white text-black font-black uppercase tracking-widest py-6 text-lg hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-4 group"
               >
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="group relative w-full inline-flex items-center justify-center gap-3 rounded-full bg-orange-600 px-8 py-4 text-base sm:text-lg font-medium text-white shadow-lg shadow-orange-900/30 transition-all duration-300 hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-800/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="animate-spin">⏳</span>
-                      Mengirim...
-                    </>
-                  ) : (
-                    <>
-                      Kirim Pesan
-                      <span className="transition-transform duration-300 group-hover:translate-x-1">
-                        <ArrowRight size={20} />
-                      </span>
-                    </>
-                  )}
-                </button>
-              </motion.div>
-            </div>
-          </motion.div>
+                  {isSubmitting ? t.form.sending : t.form.send}
+                  {!isSubmitting && <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />}
+              </button>
+           </div>
         </div>
+
       </div>
     </section>
   );

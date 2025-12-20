@@ -1,147 +1,126 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import { Rocket, Move3d, BrainCircuit } from "lucide-react";
 import { motion } from "framer-motion";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
+import { Rocket, Move3d, BrainCircuit } from "lucide-react";
 
 const About = () => {
-  const title = "Tentang Saya";
+  const { language } = useLanguage();
+  const t = translations[language].about;
 
-  const viewportConfig = { once: true, amount: 0.3 };
-  const textEase = "easeOut";
-  const backEase = "backOut";
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+
+  const textEase = [0.65, 0, 0.35, 1];
+  const viewportConfig = { once: true, margin: "-100px" };
 
   return (
-    <main
-      id="tentang"
-      className={`${inter.variable} font-sans relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-black text-white p-8 md:p-16`}
-    >
-      <section className="grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-24 items-center">
-        {/* FOTO */}
-        <motion.div
-          className="w-full lg:col-span-5 transition-transform duration-300 ease-out hover:scale-[1.03] hover:-translate-y-1"
-          initial={{ x: -100, scale: 0.8, opacity: 0 }}
-          whileInView={{ x: 0, scale: 1, opacity: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          viewport={viewportConfig}
+    <section id="tentang" className="relative min-h-screen bg-black py-32 px-4 md:px-8 overflow-hidden font-sans">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto mb-16 relative z-10">
+        <motion.span 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="block text-orange-500 font-mono text-sm tracking-widest mb-4"
         >
-          <Image
-            src="/images/fiha-tentang.png"
-            alt="Foto Profil Fiha Aridhoi"
-            width={600}
-            height={750}
-            priority
-            className="object-contain w-full h-auto"
-          />
-        </motion.div>
+          // 01. INTRO
+        </motion.span>
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter"
+        >
+          {t.title}
+        </motion.h2>
+      </div>
 
-        {/* BIO */}
-        <div className="flex flex-col justify-center lg:col-span-7">
-          {/* JUDUL */}
-          <h1 className="text-4xl font-extrabold tracking-tighter text-white sm:text-6xl">
-            {title.split("").map((letter, index) => (
-              <motion.span
-                key={index}
-                className="inline-block"
-                initial={{ y: 30, rotateX: -90, opacity: 0 }}
-                whileInView={{ y: 0, rotateX: 0, opacity: 1 }}
-                transition={{
-                  duration: 0.6,
-                  ease: backEase,
-                  delay: 0.3 + index * 0.05,
-                }}
-                viewport={viewportConfig}
-              >
-                {letter === " " ? "\u00A0" : letter}
-              </motion.span>
-            ))}
-          </h1>
-
-          {/* PARAGRAF 1 */}
-          <motion.p
-            className="mt-6 text-lg text-gray-300 leading-relaxed"
-            initial={{ x: 50, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: textEase, delay: 0.6 }}
-            viewport={viewportConfig}
-          >
-            Saya adalah seorang Frontend Developer yang berfokus pada membangun
-            website modern menggunakan teknologi seperti Next.js, Tailwind CSS,
-            GSAP, dan AOS. Saya percaya bahwa sebuah antarmuka tidak hanya harus
-            menarik, tetapi juga memberikan pengalaman yang responsif, cepat,
-            dan terasa hidup bagi pengguna.
-          </motion.p>
-
-          {/* SKILL LIST */}
-          <div className="my-8 space-y-4">
-            {/* GSAP */}
-            <motion.div
-              className="flex items-center gap-3"
-              initial={{ x: 50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.6, ease: textEase, delay: 0.8 }}
-              viewport={viewportConfig}
-            >
-              <Rocket className="h-5 w-5 text-orange-500" />
-              <span className="text-lg text-gray-200">
-                Membuat animasi interaktif dan smooth menggunakan GSAP & AOS
-              </span>
-            </motion.div>
-
-            {/* Next.js + 3D */}
-            <motion.div
-              className="flex items-center gap-3"
-              initial={{ x: 50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.6, ease: textEase, delay: 0.95 }}
-              viewport={viewportConfig}
-            >
-              <Move3d className="h-5 w-5 text-orange-500" />
-              <span className="text-lg text-gray-200">
-                Membangun website modern dengan Next.js 
-              </span>
-            </motion.div>
-
-            {/* Backend & Version Control */}
-            <motion.div
-              className="flex items-center gap-3"
-              initial={{ x: 50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.6, ease: textEase, delay: 1.1 }}
-              viewport={viewportConfig}
-            >
-              <BrainCircuit className="h-5 w-5 text-orange-500" />
-              <span className="text-lg text-gray-200">
-                Mengelola backend dengan Laravel, PHP, MySQL & version control
-                menggunakan Git, GitHub, dan GitLab
-              </span>
-            </motion.div>
-          </div>
-
-          {/* PARAGRAF 2 */}
+      {/* Bento Grid Layout */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)]">
+        
+        {/* Card 1: Main Description */}
+        <motion.div 
+          variants={cardVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="md:col-span-2 bg-zinc-900/30 border border-gray-800 p-8 md:p-12 transition-all duration-300 hover:border-orange-500 hover:bg-zinc-900/50 group flex flex-col justify-center"
+        >
+          <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-orange-500 transition-colors">Who I Am</h3>
+          <p className="text-gray-400 text-lg leading-relaxed mb-6">
+            {t.p1}
+          </p>
           <motion.p
             className="text-lg text-gray-300 leading-relaxed"
             initial={{ x: 50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: textEase, delay: 1.2 }}
+            transition={{ duration: 0.8, ease: textEase, delay: 0.2 }}
             viewport={viewportConfig}
           >
-            Saya terus mengembangkan kemampuan saya dalam JavaScript,
-            TypeScript, dan ekosistem frontend lainnya. Bagi saya, proses
-            membangun website bukan hanya tentang menulis kode, tetapi bagaimana
-            menghadirkan solusi digital yang fungsional, efektif, dan memberikan
-            dampak nyata kepada pengguna.
+            {t.p2}
           </motion.p>
-        </div>
-      </section>
-    </main>
+        </motion.div>
+
+        {/* Card 2: Photo */}
+        <motion.div 
+          variants={cardVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="md:col-span-1 relative h-[400px] md:h-auto border border-gray-800 overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-orange-500/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-all duration-500" />
+          <Image
+            src="/images/fiha-tentang.webp"
+            alt="Fiha Aridhoi"
+            fill
+            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-110"
+          />
+        </motion.div>
+
+        {/* Card 3: Skills List */}
+        <motion.div
+           variants={cardVariants}
+           initial="hidden"
+           whileInView="visible"
+           viewport={{ once: true }}
+           transition={{ delay: 0.3 }}
+           className="md:col-span-3 bg-zinc-900/30 border border-gray-800 p-8 md:p-10 transition-all duration-300 hover:border-orange-500 hover:bg-zinc-900/50 group"
+        >
+           <h3 className="text-xl font-bold text-white mb-6 group-hover:text-orange-500 transition-colors">Key Skills</h3>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* GSAP */}
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-full bg-zinc-800/50 text-orange-500 border border-zinc-700">
+                  <Rocket className="h-6 w-6" />
+                </div>
+                <span className="text-gray-300 font-medium">{t.skills.gsap}</span>
+              </div>
+
+               {/* Next.js */}
+               <div className="flex items-center gap-4">
+                <div className="p-3 rounded-full bg-zinc-800/50 text-orange-500 border border-zinc-700">
+                  <Move3d className="h-6 w-6" />
+                </div>
+                <span className="text-gray-300 font-medium">{t.skills.nextjs}</span>
+              </div>
+
+               {/* Backend */}
+               <div className="flex items-center gap-4">
+                <div className="p-3 rounded-full bg-zinc-800/50 text-orange-500 border border-zinc-700">
+                   <BrainCircuit className="h-6 w-6" />
+                </div>
+                <span className="text-gray-300 font-medium">{t.skills.backend}</span>
+              </div>
+           </div>
+        </motion.div>
+
+      </div>
+    </section>
   );
 };
 

@@ -5,6 +5,7 @@ import ModernNavbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
 import SmoothScroll from "@/components/SmoothScroll";
 import { PreloaderProvider } from "@/contexts/PreloaderContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +32,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PreloaderProvider>
-          <Preloader />
-          <SmoothScroll />
-          <ModernNavbar/>
-          {children}
-        </PreloaderProvider>
+        <LanguageProvider>
+          <PreloaderProvider>
+            <Preloader />
+            <SmoothScroll />
+            <ModernNavbar />
+            {children}
+          </PreloaderProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

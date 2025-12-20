@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react"; // useRef dihapus
+import React from "react";
 import { Inter } from "next/font/google";
 import {
   SiJavascript,
@@ -16,186 +16,138 @@ import {
   SiGithub,
   SiGitlab,
 } from "react-icons/si";
-import { ChevronsDown } from "lucide-react"; // Ikon untuk AOS
+import { ChevronsDown } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-// --- DAFTAR KEAHLIAN DIPERBARUI ---
-const languages = [
-  { name: "JavaScript", icon: SiJavascript },
-  { name: "TypeScript", icon: SiTypescript },
-  { name: "PHP", icon: SiPhp },
-  { name: "MySQL", icon: SiMysql },
+// Data Skills
+const skillCategories = [
+  {
+    key: "frameworks",
+    items: [
+      { name: "Next.js", icon: SiNextdotjs, color: "hover:text-white" },
+      { name: "Laravel", icon: SiLaravel, color: "hover:text-[#FF2D20]" },
+      { name: "Tailwind CSS", icon: SiTailwindcss, color: "hover:text-[#06B6D4]" },
+      { name: "GSAP", icon: SiGreensock, color: "hover:text-[#88CE02]" },
+      { name: "Bootstrap", icon: SiBootstrap, color: "hover:text-[#7952B3]" },
+      { name: "AOS", icon: ChevronsDown, color: "hover:text-orange-500" },
+    ],
+  },
+  {
+    key: "languages",
+    items: [
+      { name: "JavaScript", icon: SiJavascript, color: "hover:text-[#F7DF1E]" },
+      { name: "TypeScript", icon: SiTypescript, color: "hover:text-[#3178C6]" },
+      { name: "PHP", icon: SiPhp, color: "hover:text-[#777BB4]" },
+      { name: "MySQL", icon: SiMysql, color: "hover:text-[#4479A1]" },
+    ],
+  },
+  {
+    key: "tools",
+    items: [
+      { name: "Git", icon: SiGit, color: "hover:text-[#F05032]" },
+      { name: "GitHub", icon: SiGithub, color: "hover:text-white" },
+      { name: "GitLab", icon: SiGitlab, color: "hover:text-[#FC6D26]" },
+    ],
+  },
 ];
 
-const frameworksAndLibraries = [
-  { name: "Next.js", icon: SiNextdotjs },
-  { name: "Tailwind CSS", icon: SiTailwindcss },
-  { name: "Bootstrap", icon: SiBootstrap },
-  { name: "GSAP", icon: SiGreensock },
-  { name: "AOS", icon: ChevronsDown },
-  { name: "Laravel", icon: SiLaravel },
-];
-
-const versionControlTools = [
-  { name: "Git", icon: SiGit },
-  { name: "GitHub", icon: SiGithub },
-  { name: "GitLab", icon: SiGitlab },
-];
-// --- AKHIR PEMBARUAN ---
-
-const AnimatedH2 = ({
-  title,
-  className = "",
-}: {
-  title: string;
-  className?: string;
-}) => {
-  const backEase = "backOut";
-  const viewportConfig = { once: true, amount: 0.5 };
-
+const SkillCard = ({ item, index }: { item: any; index: number }) => {
   return (
-    <h2
-      className={`text-3xl font-bold tracking-tight text-orange-500 sm:text-4xl text-center ${className}`}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -5, scale: 1.02 }}
+      className="group relative flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:border-orange-500/30"
     >
-      {title.split("").map((letter, index) => (
-        <motion.span
-          key={index}
-          className="inline-block"
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{
-            duration: 0.6,
-            ease: backEase,
-            delay: index * 0.05,
-          }}
-          viewport={viewportConfig}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
-      ))}
-    </h2>
+      {/* Glow Effect on Hover */}
+      <div className="absolute inset-0 rounded-2xl bg-orange-500/0 blur-xl transition-all duration-500 group-hover:bg-orange-500/5 -z-10" />
+      
+      <div className={`text-4xl lg:text-5xl text-gray-400 transition-all duration-300 transform-gpu group-hover:scale-110 ${item.color}`}>
+        <item.icon />
+      </div>
+      
+      <span className="text-sm font-medium tracking-wide text-gray-400 transition-colors duration-300 group-hover:text-white">
+        {item.name}
+      </span>
+    </motion.div>
   );
 };
 
 const Skills = () => {
-  const title = "Keahlian Saya";
-  const backEase = "backOut";
-  const viewportConfig = { once: true, amount: 0.5 };
+  const { language } = useLanguage();
+  const t = translations[language].skills;
 
   return (
     <main
       id="skills"
-      className={`${inter.variable} font-sans relative flex min-h-screen w-full flex-col items-center overflow-hidden bg-black text-white p-8 md:p-16`}
+      className={`${inter.variable} font-sans relative min-h-screen w-full bg-black text-white py-24 px-6 md:px-12 lg:px-24 overflow-hidden`}
     >
-      <div className="w-full max-w-7xl">
-        <h1 className="text-4xl font-extrabold tracking-tighter text-white sm:text-6xl text-center">
-          {title.split("").map((letter, index) => (
-            <motion.span
-              key={index}
-              className="inline-block"
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{
-                duration: 0.6,
-                ease: backEase,
-                delay: 0.2 + index * 0.05,
-              }}
-              viewport={viewportConfig}
-            >
-              {letter === " " ? "\u00A0" : letter}
-            </motion.span>
-          ))}
-        </h1>
-        <motion.p
-          className="mt-4 text-center text-lg text-gray-400 max-w-2xl mx-auto"
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.8 }}
-          viewport={viewportConfig}
-        >
-          Teknologi yang saya gunakan untuk mengubah ide menjadi produk digital
-          yang interaktif dan berperforma tinggi.
-        </motion.p>
+      {/* Decorative Background Elements */}
+      <div className="absolute top-1/4 -left-20 w-72 h-72 bg-orange-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
 
-        <section className="mt-24">
-          <AnimatedH2 title="Frameworks & Libraries" />
-          <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {frameworksAndLibraries.map((skill, index) => (
-              <SkillCard
-                key={skill.name}
-                icon={<skill.icon />}
-                name={skill.name}
-                delay={index * 0.08}
-              />
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col items-center mb-20">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="mb-4 flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/5 px-4 py-1.5"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-500">
+              Expertise
+            </span>
+          </motion.div>
+
+          <h2 className="text-center text-4xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
+            {t.title.split(" ").map((word: string, i: number) => (
+              <span key={i} className={i === 1 ? "text-orange-500" : "text-white"}>
+                {word}{" "}
+              </span>
             ))}
-          </div>
-        </section>
+          </h2>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="mt-6 text-center text-gray-400 max-w-2xl text-base md:text-lg leading-relaxed"
+          >
+            {t.subtitle}
+          </motion.p>
+        </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
-          <section>
-            <AnimatedH2 title="Languages" />
-            <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
-              {languages.map((skill, index) => (
-                <SkillCard
-                  key={skill.name}
-                  icon={<skill.icon />}
-                  name={skill.name}
-                  delay={index * 0.08}
-                />
-              ))}
-            </div>
-          </section>
+        {/* Skills Categories */}
+        <div className="space-y-24">
+          {skillCategories.map((category) => (
+            <section key={category.key} className="relative">
+              <div className="flex items-center gap-4 mb-10">
+                <h3 className="text-xl font-semibold uppercase tracking-widest text-orange-500/80">
+                  {t[category.key as keyof typeof t]}
+                </h3>
+                <div className="h-[1px] flex-grow bg-gradient-to-r from-orange-500/30 to-transparent" />
+              </div>
 
-          {/* --- BAGIAN DIPERBARUI --- */}
-          <section>
-            <AnimatedH2 title="Tools Version Control" />
-            <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3">
-              {versionControlTools.map((skill, index) => (
-                <SkillCard
-                  key={skill.name}
-                  icon={<skill.icon />}
-                  name={skill.name}
-                  delay={index * 0.08}
-                />
-              ))}
-            </div>
-          </section>
-          {/* --- AKHIR PEMBARUAN --- */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                {category.items.map((skill, index) => (
+                  <SkillCard key={skill.name} item={skill} index={index} />
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </main>
-  );
-};
-
-const SkillCard = ({
-  icon,
-  name,
-  delay,
-}: {
-  icon: React.ReactNode;
-  name: string;
-  delay: number;
-}) => {
-  return (
-    <motion.div
-      className="flex flex-col items-center justify-center gap-4 rounded-xl border border-gray-800/50 bg-gradient-to-br from-gray-900/50 to-gray-800/30 p-6 backdrop-blur-sm text-gray-300 transition-all duration-300 ease-in-out hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-1 group"
-      initial={{ y: 50, scale: 0.8, opacity: 0 }}
-      whileInView={{ y: 0, scale: 1, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut", delay: delay }}
-      viewport={{ once: true, amount: 0.3 }}
-    >
-      <span className="text-4xl lg:text-5xl text-gray-400 group-hover:text-orange-400 transition-colors duration-300 group-hover:scale-110 group-hover:rotate-3 transform-gpu">
-        {icon}
-      </span>
-      <span className="font-medium text-center text-gray-300 group-hover:text-orange-400 transition-colors duration-300">
-        {name}
-      </span>
-    </motion.div>
   );
 };
 

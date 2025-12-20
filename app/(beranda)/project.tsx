@@ -1,9 +1,12 @@
 "use client";
 
+import React, { useRef } from "react";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { Github, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { Github, ExternalLink, ArrowUpRight } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,209 +16,191 @@ const inter = Inter({
 const projectsData = [
   {
     id: 1,
-    title: "Kalkulator Pintar",
-    description:
-      "Website kalkulator modern yang dibangun menggunakan Next.js 16 dan React 19. Website ini menampilkan desain glassmorphism (efek kaca) yang elegan dan interaktif, ditenagai oleh TailwindCSS 4 dan Framer Motion.",
+    key: "kalkulator",
     imageUrl: "/project/kalkulator.webp",
-    techStack: ["Next.js", "React", "Tailwind CSS", "Framer-Motion"],
+    techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion"],
     linkGithub: "https://github.com/F1H444/KalkulatorPintar",
     linkLive: "https://kalkulator-pintar.vercel.app/",
   },
   {
     id: 2,
-    title: "SMKN2 SBY V2.0",
-    description:
-      "Proyek redesign total yang dibangun menggunakan Next.js 16 (App Router) dengan fokus pada performa tinggi, animasi yang kaya, dan pengalaman pengguna yang modern. Proyek ini bukan sekadar website statis, melainkan aplikasi web interaktif penuh yang menampilkan berbagai fitur canggih untuk profil sekolah.",
+    key: "smkn2",
     imageUrl: "/project/smkn2.webp",
-    techStack: ["Next.js", "React", "Tailwind CSS", "Framer-Motion", "Gsap"],
+    techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion", "Gsap"],
     linkGithub: "https://github.com/F1H444/SMKN2-SBY-v2.0",
     linkLive: "https://smkn-2-sby-v2-0.vercel.app/",
   },
   {
     id: 3,
-    title: "PDMJ",
-    description:
-      "Di bawah arahan mentor, saya diamanatkan untuk melakukan revisi dan optimasi responsiveness pada website tersebut. Fokus utama tugas ini adalah memastikan layout dan seluruh elemen website dapat beradaptasi dan tampil dengan optimal ketika diakses melalui perangkat tablet (khususnya iPad) dan mobile.",
-    imageUrl: "/project/pdmj.webp",
-    techStack: ["Laravel", "Bootstrap", "AOS", "Swiper JS", "SCSS"],
-    linkGithub: "", // Kosong, tombol tidak akan muncul
-    linkLive: "https://pdmj.co.id/",
-  },
-  {
-    id: 4,
-    title: "AIA FLOOR",
-    description:
-      "Berkontribusi dalam peningkatan aspek responsif website AIA Floor (aiafloor.co.id). Saya berfokus pada perbaikan layout mobile dengan mengidentifikasi dan mengatasi masalah kurangnya padding horizontal",
-    imageUrl: "/project/aia.webp",
-    techStack: ["Laravel", "Bootstrap", "AOS", "Swiper JS", "SCSS"],
-    linkGithub: "", // Kosong, tombol tidak akan muncul
-    linkLive: "https://aiafloor.co.id/",
-  },
-  {
-    id: 5,
-    title: "TinyGambar",
-    description:
-      "Web modern untuk mengoptimalkan ukuran gambar (kompresi dan konversi ke WebP) yang berjalan sepenuhnya di sisi klien (client-side)",
+    key: "tiny",
     imageUrl: "/project/tiny.webp",
-    techStack: ["Next.js", "React", "Tailwind CSS", "AI/ML", "Vercel"],
+    techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion"],
     linkGithub: "https://github.com/F1H444/TINYGambar",
     linkLive: "https://tinygambar.vercel.app/",
   },
+  {
+    id: 4,
+    key: "popqr",
+    imageUrl: "/project/popqr.webp",
+    techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion"],
+    linkGithub: "https://github.com/F1H444/PopQR",
+    linkLive: "https://popqr.vercel.app/",
+  },
 ];
 
-const Projects = () => {
-  const title = "Proyek Saya";
+const ProjectCard = ({ project, index, t }: any) => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
 
-  const viewportConfig = { once: true, amount: 0.2 };
+  // Efek parallax halus pada gambar
+  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+  const projectInfo = t.items[project.key];
+
+  return (
+    <motion.article
+      ref={containerRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: "-10%" }}
+      className="group relative border-b border-white/10 py-12 md:py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center"
+    >
+      {/* Background Hover Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+
+      {/* Info Content - Order 2 on mobile, 1 on desktop */}
+      <div className="order-2 lg:order-1 lg:col-span-5 flex flex-col z-10">
+        <div className="flex items-center gap-4 mb-4 lg:mb-8">
+          <span className="font-mono text-orange-500 text-xs md:text-sm">0{index + 1}</span>
+          <div className="h-[1px] bg-white/20 w-8 md:w-12 group-hover:w-16 transition-all duration-500"></div>
+        </div>
+
+        <h3 className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white mb-4 lg:mb-6 group-hover:translate-x-2 transition-transform duration-500">
+          {projectInfo?.title || "Project Title"}
+        </h3>
+
+        <div className="flex flex-wrap gap-2 mb-6 lg:mb-8">
+          {project.techStack.map((tech: string) => (
+            <span
+              key={tech}
+              className="px-2 md:px-3 py-1 text-[9px] md:text-[10px] font-medium tracking-widest uppercase border border-white/10 text-white/50 rounded-full group-hover:border-orange-500/50 group-hover:text-orange-200 transition-colors"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        <p className="text-gray-400 text-base md:text-lg leading-relaxed mb-8 lg:mb-10 max-w-md">
+          {projectInfo?.description || "Description not available."}
+        </p>
+
+        <div className="flex flex-wrap gap-6 md:gap-8">
+          {project.linkGithub && (
+            <a
+              href={project.linkGithub}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/link flex items-center gap-2 text-white/70 hover:text-orange-500 transition-colors text-xs md:text-sm font-bold tracking-tighter"
+            >
+              <Github className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/link:-rotate-12" />
+              <span>SOURCE</span>
+            </a>
+          )}
+          {project.linkLive && project.linkLive !== "#" && (
+            <a
+              href={project.linkLive}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/link flex items-center gap-2 text-white/70 hover:text-orange-500 transition-colors text-xs md:text-sm font-bold tracking-tighter"
+            >
+              <ExternalLink className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/link:scale-110" />
+              <span>LIVE VIEW</span>
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Visual Content - Order 1 on mobile, 2 on desktop */}
+      <div className="order-1 lg:order-2 lg:col-span-7 relative">
+        <motion.div 
+          style={{ y: typeof window !== 'undefined' && window.innerWidth > 1024 ? y : 0 }} 
+          className="relative aspect-[16/10] overflow-hidden rounded-lg md:rounded-xl bg-zinc-900 shadow-2xl border border-white/5"
+        >
+          <a
+            href={project.linkLive !== "#" ? project.linkLive : "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block h-full w-full group/img"
+          >
+            {/* Elegant Overlay */}
+            <div className="absolute inset-0 bg-black/40 lg:bg-black/60 group-hover/img:bg-black/0 transition-colors duration-700 z-10" />
+            
+            <Image
+              src={project.imageUrl}
+              alt={projectInfo?.title || "Project Image"}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+              className="object-cover grayscale-[0.5] group-hover/img:grayscale-0 group-hover/img:scale-105 transition-all duration-[1.2s] ease-out"
+              priority={index < 2}
+            />
+
+            {/* Floating Badge (Only visible on hover/touch) */}
+            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 overflow-hidden">
+               <div className="bg-white text-black h-10 w-10 md:h-12 md:w-12 flex items-center justify-center rounded-full translate-y-[110%] group-hover/img:translate-y-0 transition-transform duration-500 ease-out shadow-xl">
+                  <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
+               </div>
+            </div>
+          </a>
+        </motion.div>
+      </div>
+    </motion.article>
+  );
+};
+
+const Projects = () => {
+  const { language } = useLanguage();
+  const t = translations[language].projects;
 
   return (
     <main
       id="project"
-      className={`${inter.variable} font-sans relative flex min-h-screen w-full flex-col items-center overflow-hidden bg-black text-white p-8 md:p-16`}
+      className={`${inter.variable} font-sans relative min-h-screen w-full bg-[#000000] text-white py-20 md:py-32 px-4 sm:px-8 md:px-12 lg:px-24 overflow-hidden`}
     >
-      <div className="w-full max-w-7xl">
-        <h1 className="text-4xl font-extrabold tracking-tighter text-white sm:text-6xl text-center">
-          {" "}
-          {title.split("").map((letter, index) => (
-            <motion.span
-              key={index}
-              className="inline-block"
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{
-                duration: 0.6,
-                ease: "backOut",
-                delay: index * 0.05,
-              }}
-              viewport={viewportConfig}
-            >
-              {letter === " " ? "\u00A0" : letter}
-            </motion.span>
+      {/* Subtle Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-orange-500/[0.03] blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-blue-500/[0.03] blur-[120px] rounded-full -z-10" />
+
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <header className="mb-16 md:mb-24 lg:mb-32 relative">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center gap-3 mb-4 md:mb-6"
+          >
+            <div className="h-[1px] w-6 md:w-8 bg-orange-500" />
+            <span className="text-orange-500 font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase">
+              Project Showcase
+            </span>
+          </motion.div>
+
+          <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-[10rem] font-bold leading-[0.9] md:leading-[0.85] tracking-tighter uppercase italic lg:not-italic">
+            My <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-500">
+              Projects
+            </span>
+          </h2>
+        </header>
+
+        {/* Project List */}
+        <div className="divide-y divide-white/10">
+          {projectsData.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} t={t} />
           ))}
-        </h1>
-        <motion.p
-          className="mt-4 text-center text-lg text-gray-400 max-w-2xl mx-auto"
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
-          viewport={viewportConfig}
-        >
-          Kumpulan proyek pilihan yang menunjukkan keahlian saya dalam mengubah
-          ide menjadi solusi nyata.
-        </motion.p>
-        <div className="mt-24 flex flex-col gap-24 md:gap-32">
-          {projectsData.map((project, index) => {
-            const isEven = index % 2 === 0;
-            const imageX = isEven ? -100 : 100;
-            const textX = isEven ? 100 : -100;
-            const orderClass = !isEven ? "lg:order-last" : "";
-
-            return (
-              <section
-                key={project.id}
-                className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16"
-              >
-                <motion.div
-                  className={`w-full transition-transform duration-300 hover:scale-103 ${orderClass}`}
-                  initial={{ x: imageX, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  viewport={viewportConfig}
-                >
-                  <Image
-                    src={project.imageUrl}
-                    alt={project.title}
-                    width={1200}
-                    height={900}
-                    priority={index < 2}
-                    className="rounded-xl object-cover shadow-2xl shadow-black/30 border border-gray-800"
-                  />
-                </motion.div>
-                <div className="flex flex-col justify-center">
-                  <motion.h3
-                    className="text-3xl font-bold tracking-tight text-orange-500 sm:text-4xl"
-                    initial={{ x: textX, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{
-                      duration: 0.6,
-                      ease: "easeOut",
-                      delay: 0.2,
-                    }}
-                    viewport={viewportConfig}
-                  >
-                    {project.title}
-                  </motion.h3>
-                  <motion.p
-                    className="mt-6 text-lg text-gray-300 leading-relaxed"
-                    initial={{ x: textX, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{
-                      duration: 0.6,
-                      ease: "easeOut",
-                      delay: 0.3,
-                    }}
-                    viewport={viewportConfig}
-                  >
-                    {project.description}
-                  </motion.p>
-                  <motion.div
-                    className="mt-6 flex flex-wrap gap-3"
-                    initial={{ x: textX, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{
-                      duration: 0.6,
-                      ease: "easeOut",
-                      delay: 0.4,
-                    }}
-                    viewport={viewportConfig}
-                  >
-                    {project.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="rounded-full bg-gray-800 px-4 py-2 text-sm font-medium text-orange-400 border border-gray-700"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </motion.div>
-                  <motion.div
-                    className="mt-8 flex items-center gap-6"
-                    initial={{ x: textX, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{
-                      duration: 0.6,
-                      ease: "easeOut",
-                      delay: 0.5,
-                    }}
-                    viewport={viewportConfig}
-                  >
-                    {/* Kondisi: Hanya tampilkan jika linkGithub ada isinya */}
-                    {project.linkGithub && (
-                      <a
-                        href={project.linkGithub}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-300 transition-colors hover:text-white group"
-                      >
-                        <Github className="h-5 w-5" />
-                        <span className="group-hover:underline">GitHub</span>
-                      </a>
-                    )}
-
-                    <a
-                      href={project.linkLive}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-gray-300 transition-colors hover:text-white group"
-                    >
-                      <ExternalLink className="h-5 w-5" />
-                      <span className="group-hover:underline">Live Demo</span>
-                    </a>
-                  </motion.div>
-                </div>
-              </section>
-            );
-          })}
         </div>
       </div>
     </main>
