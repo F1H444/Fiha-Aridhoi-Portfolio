@@ -15,7 +15,7 @@ const About = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
-  const textEase = [0.65, 0, 0.35, 1];
+  const textEase = [0.65, 0, 0.35, 1] as const;
   const viewportConfig = { once: true, margin: "-100px" };
 
   return (

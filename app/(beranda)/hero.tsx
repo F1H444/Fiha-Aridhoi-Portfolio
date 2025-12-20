@@ -3,15 +3,15 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Terminal, Sparkles, Layers, Cpu, MousePointer2 } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, MapPin, Terminal, Layers } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
 
 const Hero = () => {
   const { language } = useLanguage();
   const t = translations[language].hero;
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
   
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 150]);
