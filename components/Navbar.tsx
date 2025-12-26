@@ -1,263 +1,262 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Menu, X, Home, User, Code, LayoutGrid, Mail, Globe } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { Globe, ArrowUpRight } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
+import { usePreloader } from "@/contexts/PreloaderContext";
+import { useLenis } from "@/components/SmoothScroll";
 
-export default function ModernNavbar() {
+export default function UltimateFixedNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("beranda");
+  const [mounted, setMounted] = useState(false);
 
-  const router = useRouter();
   const { language, toggleLanguage } = useLanguage();
-  const t = translations[language].navbar;
+  const { isPreloading } = usePreloader();
+  const { lenis } = useLenis();
+  const { scrollY } = useScroll();
+  const t = useMemo(() => translations[language].navbar, [language]);
+
+  const navLinks = useMemo(() => [
+    { id: "beranda", name: t.home, href: "/#beranda" },
+    { id: "tentang", name: t.about, href: "/#tentang" },
+    { id: "skills", name: t.skills, href: "/#skills" },
+    { id: "project", name: t.projects, href: "/#project" },
+    { id: "kontak", name: t.contact, href: "/#kontak" },
+  ], [t]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    setMounted(true);
   }, []);
 
-  const navLinks = [
-    { id: "beranda", name: t.home, href: "/#beranda", icon: Home },
-    { id: "tentang", name: t.about, href: "/#tentang", icon: User },
-    { id: "skills", name: t.skills, href: "/#skills", icon: Code },
-    { id: "project", name: t.projects, href: "/#project", icon: LayoutGrid },
-    { id: "kontak", name: t.contact, href: "/#kontak", icon: Mail },
-  ];
-
   useEffect(() => {
-    router.prefetch("/");
-  }, [router]);
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
+  }, [isMobileMenuOpen]);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 50);
+    if (latest < 100) setActiveSection("beranda");
+  });
 
   useEffect(() => {
     const observerOptions = {
-      root: null,
-      rootMargin: "-40% 0px -60% 0px",
+      rootMargin: "-20% 0px -70% 0px",
       threshold: 0,
     };
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id);
         }
       });
-    };
+    }, observerOptions);
 
-    const observer = new IntersectionObserver(
-      observerCallback,
-      observerOptions
-    );
+    navLinks.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (el) observer.observe(el);
+    });
 
-    const sections = navLinks
-      .map((link) => document.getElementById(link.id))
-      .filter((section): section is HTMLElement => section !== null);
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => sections.forEach((section) => observer.unobserve(section));
+    return () => observer.disconnect();
   }, [navLinks]);
 
-  // --- FUNGSI BARU UNTUK SMOOTH SCROLL ---
-  const handleSmoothScroll = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    linkId: string
-  ) => {
-    // 1. Mencegah perilaku default (lompat instan)
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
+    setActiveSection(id);
+    setIsMobileMenuOpen(false);
 
-    // 2. Cari elemen target berdasarkan ID
-    const targetElement = document.getElementById(linkId);
-
-    if (targetElement) {
-      // 3. Lakukan scroll halus ke elemen tersebut
-      targetElement.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (id === "beranda") {
+      lenis?.scrollTo(0);
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        lenis?.scrollTo(el, { offset: -100 });
+      }
     }
-
-    // 4. Tutup menu mobile jika sedang terbuka
-    if (isMobileMenuOpen) {
-      setIsMobileMenuOpen(false);
-    }
-
-    // 5. Menjaga logika khusus untuk link 'kontak' dari kode Anda
-    if (linkId === "kontak") {
-      setActiveSection("kontak");
-    }
-  };
-  // --- AKHIR FUNGSI BARU ---
-
-  const mobileMenuVariant: Variants = {
-    hidden: {
-      opacity: 0,
-      y: -20,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-        staggerChildren: 0.05,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -10,
-      transition: { duration: 0.2, ease: "easeIn" },
-    },
+    window.history.pushState(null, "", id === "beranda" ? "/" : `/#${id}`);
   };
 
-  const mobileLinkVariant: Variants = {
-    hidden: { opacity: 0, x: -15 },
-    visible: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -15 },
-  };
+  if (!mounted) return null;
 
   return (
-    <nav
-      className={`fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-[90%] md:w-full max-w-3xl mt-6`}
-    >
-      <div
-        className={`backdrop-blur-xl bg-white/60 dark:bg-gray-900/60 border border-gray-200/30 dark:border-gray-700/30 transition-all duration-500 rounded-3xl shadow-xl`}
+    <header className="fixed top-0 left-0 w-full z-[100] px-4 md:px-8 py-5 md:py-8 pointer-events-none mt-7">
+      <motion.nav 
+        variants={{
+          hidden: { 
+            width: "4rem", // Starts as a small pill
+            opacity: 0,
+            paddingLeft: "0rem",
+            paddingRight: "0rem",
+          },
+          visible: { 
+            width: "100%", 
+            opacity: 1,
+            paddingLeft: "2.5rem", 
+            paddingRight: "2.5rem",
+            transition: { 
+              type: "spring",
+              bounce: 0.3, // Bouncy spring effect
+              duration: 1.2,
+              when: "beforeChildren",
+              staggerChildren: 0.15
+            }
+          }
+        }}
+        initial="hidden"
+        animate={isPreloading ? "hidden" : "visible"}
+        className={`mx-auto max-w-6xl pointer-events-auto border-[3px] border-black dark:border-white relative transition-colors duration-500 overflow-hidden ${
+          isScrolled 
+            ? "bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)]" 
+            : "bg-orange-400 dark:bg-orange-500 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]"
+        }`}
+        style={{
+          borderRadius: "2.5rem",
+          paddingTop: "1.25rem",
+          paddingBottom: "1.25rem",
+        }}
       >
-        <div className="px-6 lg:px-8">
-          <div
-            className={`flex items-center justify-between transition-all duration-500 h-20`}
+        <div className="flex items-center justify-between relative z-10 w-full">
+          <motion.div 
+            variants={{
+              hidden: { y: 20, opacity: 0, scale: 0.9, filter: "blur(10px)" },
+              visible: { 
+                y: 0, 
+                opacity: 1, 
+                scale: 1, 
+                filter: "blur(0px)",
+                transition: { type: "spring", bounce: 0.4, duration: 0.8 } 
+              }
+            }}
           >
-            {/* Logo */}
-            <Link
-              href="/#beranda"
-              className="flex items-center space-x-3 group"
-              onClick={(e) => handleSmoothScroll(e, "beranda")} // <-- DIPERBARUI
+            <Link 
+              href="/#beranda" 
+              onClick={(e) => handleSmoothScroll(e, "beranda")}
+              className="flex items-center gap-4 group"
             >
-              <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform duration-300 ease-in-out">
-                <Image
-                  src="/images/fiha.png"
-                  alt="Logo"
-                  fill
-                  sizes="(max-width: 768px) 36px, 40px"
-                  className="object-cover rounded-lg"
-                  priority
-                />
-              </div>
-              <span className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight group-hover:text-black dark:group-hover:text-white transition-colors">
-                Fiha Aridhoi
-              </span>
-            </Link>
-
-            {/* Navigasi Desktop (Modern) */}
-            <div className="hidden md:flex items-center bg-gray-100/70 dark:bg-gray-800/70 p-1 rounded-full border border-gray-200/50 dark:border-gray-700/50">
-              {navLinks.map((link) => {
-                const isActive = activeSection === link.id;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-full relative z-10 ${isActive
-                      ? "text-gray-900 dark:text-gray-100"
-                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-                      }`}
-                    onClick={(e) => handleSmoothScroll(e, link.id)} // <-- DIPERBARUI
-                  >
-                    {link.name}
-                    {isActive && (
-                      <motion.div
-                        layoutId="desktop-active-pill"
-                        className="absolute inset-0 bg-white dark:bg-gray-700 shadow-md rounded-full"
-                        style={{ zIndex: -1 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 350,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                  </Link>
-                );
-              })}
+            <div className="relative w-11 h-11 border-[3px] border-black dark:border-white bg-white rotate-[-3deg] group-hover:rotate-0 transition-all duration-500 overflow-hidden">
+              <Image src="/images/fiha.png" alt="Logo" fill className="object-cover grayscale group-hover:grayscale-0" />
             </div>
+            <div className="hidden sm:block">
+              <p className="text-sm font-black uppercase italic leading-none tracking-tighter text-black dark:text-white">
+                Fiha Aridhoi
+              </p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/60 dark:text-white/60">Web Developer</p>
+            </div>
+          </Link>
 
-            {/* Language Toggle (Desktop) */}
+          </motion.div>
+
+          <motion.div 
+            variants={{
+              hidden: { y: 20, opacity: 0, scale: 0.9, filter: "blur(10px)" },
+              visible: { 
+                y: 0, 
+                opacity: 1, 
+                scale: 1, 
+                filter: "blur(0px)",
+                transition: { type: "spring", bounce: 0.4, duration: 0.8 } 
+              }
+            }}
+            className="hidden lg:flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 border-2 border-black/10 dark:border-white/10 relative"
+          >
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <Link
+                  key={link.id}
+                  href={link.href}
+                  onClick={(e) => handleSmoothScroll(e, link.id)}
+                  className={`px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-colors relative rounded-full ${
+                    isActive ? "text-white dark:text-black" : "text-black dark:text-white hover:opacity-60"
+                  }`}
+                >
+                  <span className="relative z-10">{link.name}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="brutalist-active"
+                      className="absolute inset-0 bg-black dark:bg-white rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          <motion.div 
+            variants={{
+              hidden: { y: 20, opacity: 0 },
+              visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
+            }}
+            className="flex items-center gap-4"
+          >
             <button
               onClick={toggleLanguage}
-              className="hidden md:flex items-center gap-2 ml-4 px-3 py-1.5 rounded-full bg-gray-100/70 dark:bg-gray-800/70 border border-gray-200/50 dark:border-gray-700/50 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 transition-all"
+              className="relative group hidden sm:flex items-center justify-center w-12 h-12 bg-white dark:bg-zinc-800 border-[3px] border-black dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
             >
-              <Globe size={16} />
-              <span>{language === "en" ? "ID" : "EN"}</span>
+              <Globe size={18} />
+              <span className="absolute -top-2 -right-2 bg-black dark:bg-white text-white dark:text-black text-[8px] font-black px-1 border-2 border-black">
+                {language.toUpperCase()}
+              </span>
             </button>
 
-            {/* Tombol Menu Mobile */}
-            <button
+            <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100/60 dark:hover:bg-gray-800/60 rounded-lg transition-colors duration-300"
-              aria-label="Toggle menu"
+              className="flex lg:hidden items-center justify-center bg-black dark:bg-white text-white dark:text-black px-5 py-2 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black text-xs tracking-widest active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? "CLOSE" : "MENU"}
             </button>
-          </div>
+          </motion.div>
         </div>
+      </motion.nav>
 
-        {/* Menu Mobile (Modern) */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              className="md:hidden overflow-hidden border-t border-gray-200/50 dark:border-gray-700/50"
-              variants={mobileMenuVariant}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <div className="px-6 py-4 space-y-2">
-                {navLinks.map((link) => {
-                  const isActive = activeSection === link.id;
-                  const Icon = link.icon;
-                  return (
-                    <motion.div key={link.name} variants={mobileLinkVariant}>
-                      <Link
-                        href={link.href}
-                        onClick={(e) => handleSmoothScroll(e, link.id)} // <-- DIPERBARUI
-                        className={`flex items-center space-x-3 px-4 py-3 font-medium rounded-lg transition-all duration-300 transform hover:translate-x-1 ${isActive
-                          ? "bg-gray-100/60 dark:bg-gray-800/60 text-black dark:text-white"
-                          : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-gray-800/60"
-                          }`}
-                      >
-                        <Icon
-                          className={`w-5 h-5 ${isActive ? "text-orange-500" : ""
-                            }`}
-                        />
-                        <span>{link.name}</span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-orange-500 dark:bg-zinc-950 z-[101] p-6 flex flex-col pointer-events-auto"
+          >
+            <div className="flex justify-between items-center mb-12 pt-4">
+              <span className="font-black text-4xl tracking-tighter text-black dark:text-white uppercase italic">MENU</span>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black border-[3px] border-black font-black text-xs"
+              >
+                CLOSE
+              </button>
+            </div>
 
-              {/* Language Toggle (Mobile) */}
-              <div className="px-6 pb-4">
-                <button
-                  onClick={toggleLanguage}
-                  className="flex w-full items-center space-x-3 px-4 py-3 font-medium rounded-lg transition-all duration-300 text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-gray-800/60"
+            <div className="space-y-4 flex-1">
+              {navLinks.map((link, idx) => (
+                <motion.div
+                  key={link.id}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: idx * 0.05 }}
                 >
-                  <Globe className="w-5 h-5" />
-                  <span>{language === "en" ? "Switch to Indonesian" : "Switch to English"}</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </nav>
+                  <Link
+                    href={link.href}
+                    onClick={(e) => handleSmoothScroll(e, link.id)}
+                    className={`group flex items-center justify-between p-6 border-[4px] border-black dark:border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${
+                      activeSection === link.id ? "bg-white text-black" : "bg-transparent text-black dark:text-white"
+                    }`}
+                  >
+                    <span className="text-3xl font-black uppercase italic">{link.name}</span>
+                    <ArrowUpRight size={24} />
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

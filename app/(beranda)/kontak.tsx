@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   Mail,
@@ -7,7 +8,7 @@ import {
   ArrowRight,
   Github,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
 
@@ -25,6 +26,27 @@ interface FormInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+// Framer Motion Variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.215, 0.61, 0.355, 1] as [number, number, number, number] },
+  },
+};
+
 const FormInput: React.FC<FormInputProps> = ({
   label,
   name,
@@ -32,7 +54,7 @@ const FormInput: React.FC<FormInputProps> = ({
   value,
   onChange,
 }) => (
-  <div className="relative group">
+  <motion.div variants={itemVariants} className="relative group">
     <label
       htmlFor={name}
       className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2 block group-focus-within:text-orange-500 transition-colors"
@@ -49,7 +71,7 @@ const FormInput: React.FC<FormInputProps> = ({
       className="w-full bg-transparent border-b-2 border-zinc-800 py-4 text-xl text-white placeholder-transparent focus:outline-none focus:border-orange-500 transition-colors"
       placeholder={label}
     />
-  </div>
+  </motion.div>
 );
 
 const Contact: React.FC = () => {
@@ -95,7 +117,6 @@ const Contact: React.FC = () => {
     );
 
     if (!response.ok) throw new Error("Failed to send email");
-
     return { status: response.status, text: await response.text() };
   };
 
@@ -131,12 +152,18 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="kontak" className="relative min-h-screen bg-black py-24 px-4 md:px-8 border-t border-zinc-900">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+    <section id="kontak" className="relative min-h-screen bg-black py-24 px-4 md:px-8 overflow-hidden">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20"
+      >
         
         {/* LEFT COLUMN: INFO */}
         <div className="flex flex-col justify-between">
-          <div>
+          <motion.div variants={itemVariants}>
             <span className="block text-orange-500 font-mono text-sm tracking-widest mb-4">// 03. CONTACT</span>
             <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter mb-10 leading-none">
               GET IN <br /> TOUCH
@@ -144,45 +171,56 @@ const Contact: React.FC = () => {
             <p className="text-xl text-gray-400 max-w-md leading-relaxed mb-12">
               {t.subtitle}
             </p>
-          </div>
+          </motion.div>
 
           <div className="space-y-8">
-             <a href="mailto:fihaaridhoi@gmail.com" className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors">
-                <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <span className="text-xl md:text-3xl font-bold tracking-tight">fihaaridhoi@gmail.com</span>
-             </a>
-             
-             <a href="tel:+6282128573839" className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors">
-                <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <span className="text-xl md:text-3xl font-bold tracking-tight">+62 821 2857 3839</span>
-             </a>
+            <motion.a 
+              variants={itemVariants}
+              href="mailto:fihaaridhoi@gmail.com" 
+              className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors"
+            >
+              <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
+                <Mail className="w-6 h-6" />
+              </div>
+              <span className="text-xl md:text-3xl font-bold tracking-tight">fihaaridhoi@gmail.com</span>
+            </motion.a>
+            
+            <motion.a 
+              variants={itemVariants}
+              href="tel:+6282128573839" 
+              className="group flex items-center gap-6 text-white hover:text-orange-500 transition-colors"
+            >
+              <div className="p-4 border border-zinc-800 rounded-full group-hover:border-orange-500 transition-colors">
+                <Phone className="w-6 h-6" />
+              </div>
+              <span className="text-xl md:text-3xl font-bold tracking-tight">+62 821 2857 3839</span>
+            </motion.a>
 
-             <div className="group flex items-center gap-6 text-gray-400">
-                <div className="p-4 border border-zinc-800 rounded-full text-white">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <span className="text-xl md:text-2xl font-medium">Surabaya, Indonesia</span>
-             </div>
+            <motion.div variants={itemVariants} className="group flex items-center gap-6 text-gray-400">
+              <div className="p-4 border border-zinc-800 rounded-full text-white">
+                <MapPin className="w-6 h-6" />
+              </div>
+              <span className="text-xl md:text-2xl font-medium">Surabaya, Indonesia</span>
+            </motion.div>
           </div>
           
-          <div className="mt-16">
-            <a href="https://github.com/F1H444/" target="_blank" className="text-white hover:text-orange-500 transition-colors">
+          <motion.div variants={itemVariants} className="mt-16">
+            <a href="https://github.com/F1H444/" target="_blank" className="text-white hover:text-orange-500 transition-colors inline-block">
                <Github className="w-8 h-8" />
             </a>
-          </div>
+          </motion.div>
         </div>
 
         {/* RIGHT COLUMN: FORM */}
-        <div className="bg-zinc-900/20 border border-zinc-800 p-8 md:p-12">
+        <motion.div 
+          variants={itemVariants}
+          className="bg-zinc-900/20 border border-zinc-800 p-8 md:p-12 relative"
+        >
            <div className="space-y-10">
               <FormInput label={t.form.name} name="name" value={formData.name} onChange={handleChange} />
               <FormInput label={t.form.email} name="email" type="email" value={formData.email} onChange={handleChange} />
               
-              <div className="relative group">
+              <motion.div variants={itemVariants} className="relative group">
                 <label htmlFor="message" className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2 block group-focus-within:text-orange-500 transition-colors">
                   {t.form.message}
                 </label>
@@ -196,28 +234,35 @@ const Contact: React.FC = () => {
                   className="w-full bg-transparent border-b-2 border-zinc-800 py-4 text-xl text-white placeholder-transparent focus:outline-none focus:border-orange-500 transition-colors resize-none"
                   placeholder={t.form.message}
                 />
-              </div>
+              </motion.div>
 
                {/* Status Message */}
               {submitStatus.type && (
-                <div className={`p-4 border ${submitStatus.type === "success" ? "border-green-500 text-green-500" : "border-red-500 text-red-500"} bg-transparent font-mono text-sm`}>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className={`p-4 border ${submitStatus.type === "success" ? "border-green-500 text-green-500" : "border-red-500 text-red-500"} bg-transparent font-mono text-sm`}
+                >
                    {submitStatus.message}
-                </div>
+                </motion.div>
               )}
 
-              <button
+              <motion.button
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-white text-black font-black uppercase tracking-widest py-6 text-lg hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-4 group"
+                className="w-full bg-white text-black font-black uppercase tracking-widest py-6 text-lg hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-4 group disabled:opacity-50"
               >
                   {isSubmitting ? t.form.sending : t.form.send}
                   {!isSubmitting && <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />}
-              </button>
+              </motion.button>
            </div>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 };

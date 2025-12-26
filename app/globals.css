@@ -115,6 +115,10 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    cursor: none !important; 
+  }
+  html, body, a, button, input, textarea, select {
+      cursor: none !important;
   }
   body {
     @apply bg-background text-foreground;
@@ -122,3 +126,36 @@
 }
 
 
+/* Custom Scrollbar (MODE HEBOH) */
+::-webkit-scrollbar {
+  width: 14px; /* Lebih lebar untuk impact visual */
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+  border-left: 1px solid #1f1f1f;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.03) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px; /* Pattern diagonal di track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ea580c 0%, #f97316 50%, #fbbf24 100%); /* Gradasi Api */
+  border: 3px solid #000; /* Floating effect */
+  border-radius: 99px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  border: 2px solid #000; /* Sedikit membesar saat hover */
+  background: #f97316; /* Solid orange saat dipegang */
+  box-shadow: 0 0 20px #f97316, 0 0 40px #ea580c; /* DUAL NEON GLOW */
+}

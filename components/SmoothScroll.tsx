@@ -1,35 +1,48 @@
-// components/SmoothScroll.tsx
-
 "use client";
 
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import Lenis from "@studio-freight/lenis";
 
-const SmoothScroll = () => {
+type LenisContextType = {
+  lenis: Lenis | null;
+};
+
+const LenisContext = createContext<LenisContextType>({
+  lenis: null,
+});
+
+export const useLenis = () => useContext(LenisContext);
+
+export default function LenisProvider({ children }: { children: ReactNode }) {
+  const [lenis, setLenis] = useState<Lenis | null>(null);
+
   useEffect(() => {
-    // Inisialisasi Lenis
-    const lenis = new Lenis({
-      duration: 1.2, // Durasi animasi (lebih tinggi = lebih lambat)
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing function
-      touchMultiplier: 2, // Multiplier untuk perangkat sentuh
+    const newLenis = new Lenis({
+      duration: 1.5,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease out
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      touchMultiplier: 2,
     });
 
-    // Fungsi untuk menjalankan loop animasi
+    setLenis(newLenis);
+
     function raf(time: number) {
-      lenis.raf(time);
+      newLenis.raf(time);
       requestAnimationFrame(raf);
     }
 
-    // Mulai loop animasi
     requestAnimationFrame(raf);
 
-    // Cleanup function
     return () => {
-      lenis.destroy();
+      newLenis.destroy();
     };
-  }, []); // Dependensi kosong, hanya berjalan sekali
+  }, []);
 
-  return null; // Komponen ini tidak me-render UI apapun
-};
-
-export default SmoothScroll;
+  return (
+    <LenisContext.Provider value={{ lenis }}>
+      {children}
+    </LenisContext.Provider>
+  );
+}

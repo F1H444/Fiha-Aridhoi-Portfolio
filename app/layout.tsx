@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ModernNavbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
-import SmoothScroll from "@/components/SmoothScroll";
+import LenisProvider from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import { PreloaderProvider } from "@/contexts/PreloaderContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
@@ -13,13 +14,14 @@ const geistSans = Geist({
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "FIHA ARIDHOI | PORTFOLIO",
   description: "Website Portfolio BY FIHA ARIDHOI",
+  
 };
 
 export default function RootLayout({
@@ -28,16 +30,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // Tambahkan suppressHydrationWarning di html atau body 
+    // untuk mencegah error akibat browser extensions
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <LanguageProvider>
           <PreloaderProvider>
             <Preloader />
-            <SmoothScroll />
-            <ModernNavbar />
-            {children}
+            <LenisProvider>
+              <CustomCursor />
+              <ModernNavbar />
+              {children}
+            </LenisProvider>
           </PreloaderProvider>
         </LanguageProvider>
       </body>

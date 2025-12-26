@@ -1,61 +1,100 @@
-// components/Preloader.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, animate } from "framer-motion";
-import { usePreloader } from "@/contexts/PreloaderContext"; // <-- 1. Impor hook
+import { motion, animate, AnimatePresence } from "framer-motion";
+import { usePreloader } from "@/contexts/PreloaderContext";
 
 const Preloader = () => {
   const [count, setCount] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
-  const { setIsPreloading } = usePreloader(); // <-- 2. Ambil fungsi setter
+  const [isFinished, setIsFinished] = useState(false);
+  const { isPreloading, setIsPreloading } = usePreloader();
 
   useEffect(() => {
+    // 1. Jalankan Counter
     const controls = animate(0, 100, {
       duration: 3,
-      ease: [0.33, 1, 0.68, 1],
+      ease: [0.65, 0, 0.35, 1],
       onUpdate(value) {
         setCount(Math.round(value));
       },
       onComplete() {
+        // Mulai efek kejut, blur, dan transparansi background
+        setIsFinished(true);
+
+        // Hapus komponen dari DOM setelah animasi transisi selesai
         setTimeout(() => {
-          setIsVisible(false);
-          setIsPreloading(false); // <-- 3. Matikan saklar!
-        }, 500);
+          setIsPreloading(false);
+        }, 1000); 
       },
     });
 
     return () => controls.stop();
-  }, [setIsPreloading]); // <-- 4. Tambahkan dependensi
+  }, [setIsPreloading]);
 
   return (
-    <motion.div
-      className="fixed inset-0 z-[9999] flex items-end justify-end bg-black p-8 md:p-12"
-      initial={{ y: 0 }}
-      animate={{
-        y: isVisible ? 0 : "-100%",
-      }}
-      transition={{ duration: 1.2, ease: [0.87, 0, 0.13, 1] }}
-      style={{ pointerEvents: isVisible ? "auto" : "none" }}
-    >
-      <motion.span
-        key={count}
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="text-8xl font-bold text-white md:text-9xl"
-        style={{ textShadow: "0 4px 15px rgba(0,0,0,0.3)" }}
-      >
-        {count}
-      </motion.span>
-      <span
-        className="text-5xl font-semibold text-gray-400 md:text-6xl"
-        style={{ textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
-      >
-        %
-      </span>
-    </motion.div>
+    <AnimatePresence>
+      {isPreloading && (
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+          // Exit agar saat komponen dilepas, ia memudar halus
+          exit={{ opacity: 0 }}
+        >
+          {/* BACKGROUND LAYER: Berubah transparan saat selesai */}
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isFinished ? 0 : 1 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0 bg-black"
+          />
+
+          {/* KONTEN ANGKA: Responsive & Efek Kejut */}
+          <div className="relative z-10 flex items-center justify-center w-full px-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ 
+                opacity: isFinished ? 0 : 1, 
+                scale: isFinished ? 2 : 1, // Membesar (Efek Kejut)
+                filter: isFinished ? "blur(30px)" : "blur(0px)", // Efek Blur
+              }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.22, 1, 0.36, 1] 
+              }}
+              className="relative flex items-baseline justify-center"
+            >
+              {/* Counter Utama: Responsive Size */}
+              <h1 className="text-[clamp(5rem,18vw,20rem)] font-black text-white leading-none tracking-tighter">
+                {count}
+              </h1>
+              
+              {/* Simbol Persen: Responsive Size */}
+              <span className="text-[clamp(1.5rem,6vw,5rem)] font-black text-orange-500 ml-2 md:ml-4">
+                %
+              </span>
+
+              {/* Angka Bayangan di Belakang untuk Depth */}
+              <div className="absolute inset-0 -z-10 flex items-center justify-center">
+                <span className="text-[clamp(6rem,22vw,24rem)] font-black text-white/[0.02] select-none">
+                  {count}
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* FLASH EFFECT: Memberikan kesan transisi yang "bersih" */}
+          <AnimatePresence>
+            {isFinished && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.5, 0] }}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 bg-white z-20 pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
