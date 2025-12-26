@@ -22,7 +22,7 @@ const projectsData = [
   {
     id: 1,
     key: "kalkulator",
-    imageUrl: "/project/kalkulator.webp",
+    imageUrl: "/project/kalkulatorpintar.webp",
     techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion"],
     linkGithub: "https://github.com/F1H444/KalkulatorPintar",
     linkLive: "https://kalkulator-pintar.vercel.app/",
@@ -30,7 +30,7 @@ const projectsData = [
   {
     id: 2,
     key: "smkn2",
-    imageUrl: "/project/smkn2.webp",
+    imageUrl: "/project/smkn2-sby-v2.0.webp",
     techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion", "Gsap"],
     linkGithub: "https://github.com/F1H444/SMKN2-SBY-v2.0",
     linkLive: "https://smkn-2-sby-v2-0.vercel.app/",
@@ -38,7 +38,7 @@ const projectsData = [
   {
     id: 3,
     key: "tiny",
-    imageUrl: "/project/tiny.webp",
+    imageUrl: "/project/tinygambar.webp",
     techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript", "Framer-Motion"],
     linkGithub: "https://github.com/F1H444/TINYGambar",
     linkLive: "https://tinygambar.vercel.app/",
